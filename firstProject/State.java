@@ -1,18 +1,23 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class State
 {
-    private int[][] tiles;
+    private int[] lefts; //who is at the left side at the moment. []
+    private int[] rights; //
+
+    private Map<String, Integer> family = new HashMap<String, Integer>(); //ex "father" : 12 means that the father of the family needs12 mins to cross the bridge
+    
     private int dimension;
 
-    // co-ordinates of empty tile.
-    private int emptyTileColumn;
-    private int emptyTileRow;
+
 
     private State father = null;
+    private
 
 
     State(int dimension, boolean randomized)
@@ -44,19 +49,24 @@ public class State
         }
         else
         {
-            this.dimension = 3;
-            this.tiles = new int[this.dimension][this.dimension];
-            this.tiles[0][0] = 8;
-            this.tiles[0][1] = 3;
-            this.tiles[0][2] = 5;
-            this.tiles[1][0] = 4;
-            this.tiles[1][1] = 1;
-            this.tiles[1][2] = 7;
-            this.tiles[2][0] = 2;
-            this.tiles[2][1] = 0;
-            this.tiles[2][2] = 6;
-            this.emptyTileRow = 2;
-            this.emptyTileColumn = 1;
+            this.dimension = 5;
+            this.family.put("Son1",1);
+            this.family.put("Son2",3);
+            this.family.put("Mother",6);
+            this.family.put("Father",8);
+            this.family.put("Grandfather",12);
+
+            
+
+            this.rights = new int[this.dimension];
+            this.lefts = new int[this.dimension];
+            
+            for (int i = 0; i<dimension;i++)
+            {
+                this.rights[i] = Map<K,V>.entry(null, null)
+            }
+
+            
         }
     }
 
