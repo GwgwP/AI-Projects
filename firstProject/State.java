@@ -1,11 +1,4 @@
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import javax.swing.FocusManager;
 
 public class State
 {
@@ -13,9 +6,9 @@ public class State
     private Family[] rights;
 
 
-    private static boolean torch = true; //true means that the torch is at the starting side 
+    private static boolean torch; //true means that the torch is at the starting side 
     
-    private int g = 0; //cost till here 
+    private int g ; //cost till here 
     
     private int dimension;
 
@@ -26,32 +19,16 @@ public class State
     {
         if(randomized)
         {
-            // this.dimension = dimension;
-            // List<Integer> numbers = new ArrayList<>(); // the numbers we will use.
-            // for(int i= 0; i < this.dimension * this.dimension; i++)
-            // {
-			// 	// 0 to 8...
-            //     numbers.add(i);
-            // }
-            // this.tiles = new int[this.dimension][this.dimension];
-            // Random r = new Random();
-            // for(int i = 0; i < this.dimension; i++)
-            // {
-            //     for(int j = 0; j < this.dimension; j++)
-            //     {
-            //         Collections.shuffle(numbers);
-            //         this.tiles[i][j] = numbers.remove(r.nextInt(numbers.size()));
-            //         if(this.tiles[i][j] == 0) // if we have the empty tile, keep its co-ordinates.
-            //         {
-            //             this.emptyTileColumn = j;
-            //             this.emptyTileRow = i;
-            //         }
-            //     }
-            // }
+            //TODO 
+            // give random family and times
         }
         else
         {
+            this.g = 0;
             this.dimension = 5;
+            State.torch = true;
+            
+            
             this.rights = new Family[this.dimension];
             this.lefts = new Family[this.dimension];
 
@@ -61,13 +38,7 @@ public class State
             Family mother = new Family("Mother", 6) ;
             Family father = new Family("Father", 8) ;
             Family grandfather = new Family("Grandfather", 12) ;
-           
-            ArrayList <Family> family = new ArrayList<>();
-            family.add(son1);
-            family.add(son2);
-            family.add(mother);
-            family.add(father);
-            family.add(grandfather);
+            
 
             this.rights[0] = son1;
             this.rights[1] = son2;
@@ -80,42 +51,19 @@ public class State
     }
 
     // constructor for creating copy of the state.
-     State(Family[] fam_r, Family[] fam_l)
+     State(Family[] fam_r, Family[] fam_l, int g)
     {
         this.setRights(fam_r);
         this.setLefts(fam_l);
+        this.g=g;
     }
 
-
-    void print()
-    {
-        System.out.println("-------------------------------------");
-        for(int i = 0; i < this.dimension; i++)
-        {
-            for(int j = 0; j < this.dimension; j++)
-            {
-                if(this.tiles[i][j] == 0)
-                {
-                    System.out.print(' ');
-                }
-                else
-                {
-                    System.out.print(this.tiles[i][j]);
-                }
-                if(j < this.dimension - 1)
-                {
-                    System.out.print('\t');
-                }
-            }
-            System.out.println();
-        }
-        System.out.println("-------------------------------------");
-    }
 
     public Family[] getLefts() {
         return lefts;
     }
 
+    // TODO CHECK IF NEEDED
     public void setLefts(Family[] lefts) {
         this.dimension = lefts.length;
         this.lefts = new Family[this.dimension];
@@ -130,6 +78,7 @@ public class State
         return rights;
     }
 
+    // TODO CHECK IF NEEDED
     public void setRights(Family[] rights) {
         this.dimension = rights.length;
         this.rights = new Family[this.dimension];
@@ -152,6 +101,8 @@ public class State
         this.dimension = dimension;
     }
 
+
+
     State getFather()
 	{
         return this.father;
@@ -162,19 +113,22 @@ public class State
         this.father = father;
     }
 
+
     ArrayList<State> getChildren()
     {
         ArrayList<State> children = new ArrayList<>();
-        State child = new State(this.rights, this.lefts);  // very important to create a copy of current state before each move.
+        State child = new State(this.rights, this.lefts, this.g);  // very important to create a copy of current state before each move.
        
         if(child.moveLeft())
         {
+            //TODO 
 			// child.setFather(this);
             // children.add(child);
         }
         //child = new State(this.tiles); // very important to create a copy of current state after each move.
         if(child.moveRight())
         {
+            //TODO
 			// child.setFather(this);
             // children.add(child);
         }
@@ -182,82 +136,35 @@ public class State
     }
 
 
-    // boolean moveLeft()
-    // {
-    //     if(this.emptyTileColumn == 0) return false; // if we are on the first column we can not move
+    boolean moveLeft()
+    {
+        //if the torch is on the right side and there are still people on the right side then we can move left 
+        return (torch && rights.length!=0 );
+    }
 
-    //     // exchange 0 with left tile.
-    //     this.tiles[this.emptyTileRow][this.emptyTileColumn] = this.tiles[this.emptyTileRow][this.emptyTileColumn - 1];
-    //     this.emptyTileColumn--;
-    //     this.tiles[this.emptyTileRow][this.emptyTileColumn] = 0;
-    //     return true;
-    // }
+    boolean moveRight()
+    {
+        //if the torch is on the left side and there are still people on the left side then we can move Right.
+        return (!torch && lefts.length!=0);
+    }
 
-    // boolean moveRight()
-    // {
-    //     if(this.emptyTileColumn == this.dimension - 1) return false; // if we are on the last column we can not move
-
-    //     // exchange 0 with left tile.
-    //     this.tiles[this.emptyTileRow][this.emptyTileColumn] = this.tiles[this.emptyTileRow][this.emptyTileColumn + 1];
-    //     this.emptyTileColumn++;
-    //     this.tiles[this.emptyTileRow][this.emptyTileColumn] = 0;
-    //     return true;
-    // }
-
-    // boolean isFinal()
-    // {
-    //     for(int i = 0; i < this.dimension; i++)
-    //     {
-    //         for(int j = 0; j < this.dimension; j++)
-    //         {
-    //             if((i == this.dimension -1) && (j == this.dimension - 1))
-    //             {
-    //                 // if we are in last row AND last column, check for 0.
-    //                 // if not 0, it's not final state.
-    //                 if(this.tiles[i][j] != 0) return false;
-    //             }
-    //             else
-    //             {
-    //                 // check for increasing order of tiles.
-    //                 // e.g., for i=j=0, this.tiles[0][0] should be equal to 0 + 0 + 1 = 1.
-    //                 if(this.tiles[i][j] != (this.dimension * i) + j + 1) return false;
-    //             }
-    //         }
-    //     }
-    //     return true;
-    // }
+    boolean isFinal()
+    {
+        return false;
+        //TODO CHECK IF FINAL STET
+      
+    }
 
 
-    // // override this for proper hash set comparisons.
-    // @Override
-    // public boolean equals(Object obj)
-    // {
-    //     if(this.dimension != ((State)obj).dimension) return false;
-    //     if(this.emptyTileRow != ((State)obj).emptyTileRow) return false;
-    //     if(this.emptyTileColumn != ((State)obj).emptyTileColumn) return false;
+    // override this for proper hash set comparisons.
+    //for the closed set probsbly?!
+    @Override
+    public boolean equals(Object obj)
+    {
+        return false;
+    }
 
-    //     // check for equality of numbers in the tiles.
-    //     for(int i = 0; i < this.dimension; i++)
-    //     {
-    //         for(int j = 0; j < this.dimension; j++)
-    //         {
-    //             if(this.tiles[i][j] != ((State)obj).tiles[i][j])
-    //             {
-    //                 return false;
-    //             }
-    //         }
-    //     }
-
-    //     return true;
-    // }
-
-    // // override this for proper hash set comparisons.
-    // @Override
-    // public int hashCode()
-    // {
-    //     return this.emptyTileRow + this.emptyTileColumn + this.dimension + this.identifier();
-    // }
-
+    
 
     // int identifier()
     // {
@@ -274,4 +181,44 @@ public class State
     //     }
     //     return result;
     // }
+    //printing every state
+    @Override
+    public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("==============================================================================================================\n");
+    
+    // Print the left side family members if not null
+    sb.append("Left: ");
+    if (lefts != null) {
+        for (Family member : lefts) {
+            if (member != null) {
+                sb.append(member.getName()).append(" (").append(member.getCrossingTime()).append("s) | ");
+            }
+        }
+    }
+    sb.append("\t\t"); // Add extra space for formatting
+    
+    // Print the torch location
+    sb.append("Torch: ").append(torch ? "--> " : "<-- ");
+    
+    // Print the right side family members if not null
+    sb.append("Right: ");
+    if (rights != null) {
+        for (Family member : rights) {
+            if (member != null) {
+                sb.append(member.getName()).append(" (").append(member.getCrossingTime()).append("s) | ");
+            }
+        }
+    }
+    sb.append("\t\t"); // Add extra space for formatting
+    
+    sb.append("Cost: ").append(g);
+    sb.append("\tDimension: ").append(dimension).append("\n");
+    
+    sb.append("==============================================================================================================\n");
+    
+    return sb.toString();
+    }
+
+
 }
