@@ -1,4 +1,7 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 public class State
 {
@@ -21,32 +24,95 @@ public class State
         {
             //TODO 
             // give random family and times
+            // List of family member names
+            List<String> familyMembers = new ArrayList<>();
+            familyMembers.add("Father");
+            familyMembers.add("Mother");
+            familyMembers.add("Son");
+            familyMembers.add("Daughter");
+            familyMembers.add("Grandfather");
+            familyMembers.add("Grandmother");
+            familyMembers.add("Son2");
+            familyMembers.add("Daughter2");
+            familyMembers.add("Son3");
+            familyMembers.add("Daughter3");
+
+            // Shuffle the list of all family names
+            Collections.shuffle(familyMembers);
+            
+            // Number of family members
+    
+            
+            // Random number generator
+            Random random = new Random();
+
+            
+            // Create an array to store family members and their crossing times
+            Family[] family = new Family[dimension];
+            
+            if(dimension <=10 )
+            {
+                // Generate random family members with names and crossing times
+                for (int i = 0; i < dimension; i++) 
+                {
+                    String randomName = familyMembers.get(random.nextInt(familyMembers.size()));
+                    int randomCrossingTime = random.nextInt(18) + 1; // Random time between 1 and 18 seconds
+                    
+                    family[i] = new Family(randomName, randomCrossingTime);
+                    
+                    // Remove the selected name to avoid duplication
+                    familyMembers.remove(randomName);
+                }
+            }
+            else
+            {
+                // Generate random family members with names and crossing times
+                for (int i = 0; i < dimension; i++) 
+                {
+                    String randomName = familyMembers.get(random.nextInt(familyMembers.size()));
+                    int randomCrossingTime = random.nextInt(18) + 1; // Random time between 1 and 18 seconds
+                    
+                    family[i] = new Family(randomName, randomCrossingTime);
+
+                }
+            }
+            
+
+            this.g = 0;
+            this.dimension = dimension;
+            State.torch = true;
+                        
+            this.rights = new Family[this.dimension];
+            this.lefts = new Family[this.dimension];
+
+            int i = 0;
+            for (Family mem:family)
+            {
+                this.rights[i] = mem;
+                i++;
+            }
+
         }
         else
         {
             this.g = 0;
             this.dimension = 5;
             State.torch = true;
-            
-            
+                        
             this.rights = new Family[this.dimension];
             this.lefts = new Family[this.dimension];
-
-            
+           
             Family son1 = new Family("Son1", 1) ;
             Family son2 = new Family("Son2", 3) ;
             Family mother = new Family("Mother", 6) ;
             Family father = new Family("Father", 8) ;
-            Family grandfather = new Family("Grandfather", 12) ;
-            
+            Family grandfather = new Family("Grandfather", 12) ;            
 
             this.rights[0] = son1;
             this.rights[1] = son2;
             this.rights[2] = mother;
             this.rights[3] = father;
-            this.rights[4] = grandfather;
-
-            
+            this.rights[4] = grandfather;            
         }
     }
 
@@ -150,8 +216,15 @@ public class State
 
     boolean isFinal()
     {
-        return false;
-        //TODO CHECK IF FINAL STET
+        // we have a final state when every family member is on the left side. 
+        // we can't return lefts.length == dimension because the array is already initialized with the dimension.
+        int counter = 0;
+        for (Family member : lefts) {
+            if (member != null) {
+                counter++;
+            }
+        }
+        return (counter == lefts.length);
       
     }
 
@@ -161,31 +234,16 @@ public class State
     @Override
     public boolean equals(Object obj)
     {
+        //TODO
         return false;
     }
 
-    
-
-    // int identifier()
-    // {
-    //     int result = 0;
-    //     for(int i = 0; i < this.dimension; i++)
-    //     {
-    //         for(int j = 0; j < this.dimension; j++)
-    //         {
-    //             // a unique sum based on the numbers in each state.
-    //             // e.g., for i=j=0 in the fixed initial state --> 3^( (0*0) + 0) * 8 = 1 + 8 = 9
-    //             // for another state, this will not be the same
-    //             result += Math.pow(this.dimension, (this.dimension * i) + j) * this.tiles[i][j];
-    //         }
-    //     }
-    //     return result;
-    // }
-    //printing every state
     @Override
     public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("==============================================================================================================\n");
+    sb.append("\t\t\t\t\t\tCost: ").append(g);
+    sb.append("\n\t\t\t\t\t\tDimension: ").append(dimension).append("\n\n\n");
     
     // Print the left side family members if not null
     sb.append("Left: ");
@@ -210,13 +268,9 @@ public class State
             }
         }
     }
-    sb.append("\t\t"); // Add extra space for formatting
+    sb.append("\n"); // Add extra space for formatting
     
-    sb.append("Cost: ").append(g);
-    sb.append("\tDimension: ").append(dimension).append("\n");
-    
-    sb.append("==============================================================================================================\n");
-    
+    sb.append("\n==============================================================================================================\n\n\n");
     return sb.toString();
     }
 
