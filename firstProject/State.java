@@ -11,6 +11,8 @@ public class State
 
     private static boolean torch; //true means that the torch is at the starting side 
     
+    private Family[] operator = new Family[2]; // we accept at most 2 people on the bridge at the same time.
+
     private int g ; //cost till here 
     
     private int dimension;
@@ -20,11 +22,16 @@ public class State
 
     State(int dimension, boolean randomized)
     {
+        //if we are in the initial state we dont have any operator that led to this initial state.
+        operator[0] = null;
+        operator[1] = null;
+
         if(randomized)
         {
             //TODO 
             // give random family and times
             // List of family member names
+
             List<String> familyMembers = new ArrayList<>();
             familyMembers.add("Father");
             familyMembers.add("Mother");
@@ -125,9 +132,7 @@ public class State
     }
 
 
-    public Family[] getLefts() {
-        return lefts;
-    }
+   
 
     // TODO CHECK IF NEEDED
     public void setLefts(Family[] lefts) {
@@ -140,8 +145,8 @@ public class State
         }
     }
 
-    public Family[] getRights() {
-        return rights;
+    public Family[] getLefts() {
+        return lefts;
     }
 
     // TODO CHECK IF NEEDED
@@ -155,6 +160,9 @@ public class State
         }
     }
 
+    public Family[] getRights() {
+        return rights;
+    }
 
 
     int getDimension() 
@@ -166,7 +174,6 @@ public class State
 	{
         this.dimension = dimension;
     }
-
 
 
     State getFather()
@@ -188,8 +195,8 @@ public class State
         if(child.moveLeft())
         {
             //TODO 
-			// child.setFather(this);
-            // children.add(child);
+			child.setFather(this);
+            children.add(child);
         }
         //child = new State(this.tiles); // very important to create a copy of current state after each move.
         if(child.moveRight())
@@ -204,14 +211,37 @@ public class State
 
     boolean moveLeft()
     {
+        if (!(torch && rights.length!=0)) return false;
         //if the torch is on the right side and there are still people on the right side then we can move left 
-        return (torch && rights.length!=0 );
+        
+        // Move at most 2 family members from the right side to the left side.
+        int count = 0;
+        for (int i = 0; i < rights.length && count < 2; i++) {
+            if (rights[i] != null) {
+                operator[count] = rights[i];
+
+                lefts[i] = rights[i];
+                rights[i] = null;
+                count++;
+            }
+        }
+
+        torch = false; // Move the torch to the left side
+
+        this.g += operator[0].getCrossingTime() +operator[1].getCrossingTime(); // Increment the cost
+
+
+        return true;
     }
 
     boolean moveRight()
     {
+        if (!(!torch && lefts.length!=0)) return false;
+
         //if the torch is on the left side and there are still people on the left side then we can move Right.
-        return (!torch && lefts.length!=0);
+        
+        
+        return true;
     }
 
     boolean isFinal()
