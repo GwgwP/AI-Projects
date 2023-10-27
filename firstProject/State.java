@@ -194,16 +194,14 @@ public class State
        
         if(child.moveLeft())
         {
-            //TODO 
 			child.setFather(this);
             children.add(child);
         }
-        //child = new State(this.tiles); // very important to create a copy of current state after each move.
+        child = new State(this.rights, this.lefts, this.g); // very important to create a copy of current state after each move.
         if(child.moveRight())
         {
-            //TODO
-			// child.setFather(this);
-            // children.add(child);
+			child.setFather(this);
+            children.add(child);
         }
         return children;
     }
