@@ -217,20 +217,34 @@ public class State
         // Move at most 2 family members from the right side to the left side.
         int count = 0;
         for (int i = 0; i < rights.length && count < 2; i++) {
-            if (rights[i] != null) {
-                operator[count] = rights[i];
-
-                lefts[i] = rights[i];
-                rights[i] = null;
-                count++;
+            if (rights[i] != null) { //if there is someone right
+                // Find an empty spot on the left side to move the family member
+                for (int j = 0; j < lefts.length; j++) {
+                    if (lefts[j] == null) {
+                        operator[count] = rights[i]; // Update the operator with the family member moving left
+                        lefts[j] = rights[i];
+                        rights[i] = null;           //remove family member who moved left
+                        count++;
+                        break;
+                    }
+                }
             }
         }
 
+
         torch = false; // Move the torch to the left side
+        int a=0;
+        int b=0;
+        if ( operator[0]!= null)
+        {
+            a = operator[0].getCrossingTime();
+        }
+        if(operator[1]!= null)
+        {
+            b = operator[1].getCrossingTime();
+        }
 
-        this.g += operator[0].getCrossingTime() +operator[1].getCrossingTime(); // Increment the cost
-
-
+        this.g += a+b; // Increase the cost
         return true;
     }
 
@@ -239,7 +253,31 @@ public class State
         if (!(!torch && lefts.length!=0)) return false;
 
         //if the torch is on the left side and there are still people on the left side then we can move Right.
-        
+        int count = 0;
+        for(int i = 0; i <lefts.length && count<2; i++){
+            if (lefts[i] != null){ //if we have people on the left
+                for (int j = 0; j<rights.length; j++){
+                    operator[count] = lefts[i];
+                    rights[j] = lefts[i];
+                    lefts[i] = null;
+                    count++;
+                    break;
+                }
+
+            }
+        }
+        torch = true;
+        int a = 0;
+        int b = 0;
+        if(operator[0]!= null)
+        {
+            a = operator[0].getCrossingTime();
+        }
+        if(operator[1]!= null)
+        {
+            b = operator[1].getCrossingTime();
+        }
+        this.g += a+b; //increase the cost
         
         return true;
     }
