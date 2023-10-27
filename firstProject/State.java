@@ -256,14 +256,16 @@ public class State
         int count = 0;
         for(int i = 0; i <lefts.length && count<2; i++){
             if (lefts[i] != null){ //if we have people on the left
+                // Find an empty spot on the right side to move the family member
                 for (int j = 0; j<rights.length; j++){
+                    if(rights[j]==null){
                     operator[count] = lefts[i];
                     rights[j] = lefts[i];
                     lefts[i] = null;
                     count++;
                     break;
+                    }
                 }
-
             }
         }
         torch = true;
