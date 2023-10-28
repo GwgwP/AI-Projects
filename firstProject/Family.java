@@ -1,39 +1,3 @@
-// public class Family {
-//     private String name;
-//     private int crossingTime;
-//     private int id;
-
-   
-
-
-//     public Family(String name, int crossingTime) {
-//         this.name = name;
-//         this.crossingTime = crossingTime;
-//         this.id = 10; 
-//     }
-
-//     public String getName() {
-//         return name;
-//     }
-
-//     public int getCrossingTime() {
-//         return crossingTime;
-//     }
-
-//      public void setName(String name) {
-//         this.name = name;
-//     }
-
-//     public void setCrossingTime(int crossingTime) {
-//         this.crossingTime = crossingTime;
-//     }
-    
-//     public int getId() {
-//         return id;
-//     }
-
-    
-// }
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
