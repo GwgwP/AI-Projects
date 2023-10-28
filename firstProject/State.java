@@ -244,10 +244,17 @@ public class State
         
         for (int i = 0; i < n; i++) {
             // one person moving
+            if(sourceSide[i] == null) continue;
             combinations.add(List.of(sourceSide[i]));
 
             for (int j = i + 1; j < n; j++) {
                 // Consider two people moving
+                if(sourceSide[i] == null) 
+                {
+                    i++;
+                    break;
+                }
+                if(sourceSide[j] == null) continue;
                 combinations.add(List.of(sourceSide[i], sourceSide[j]));
             }
         }
@@ -274,13 +281,15 @@ public class State
         int l = 0;
         for (int i = 0; i < rights.length; i++) 
         {
-            if (this.rights[i].getId() == member1.getId()) k = i;
-
-            if(member2!=null )
+            if(this.rights[i]!=null)
             {
-                if (this.rights[i].getId() == member2.getId()) l = i;
-            }    
-            
+                if (this.rights[i].getId() == member1.getId()) k = i;
+
+                if(member2!=null )
+                {
+                    if (this.rights[i].getId() == member2.getId()) l = i;
+                }
+            }              
         }
 
         // Find an empty spot on the left side to move the family member1
@@ -344,13 +353,15 @@ public class State
         
         for (int i = 0; i < lefts.length; i++) 
         {
-            if (lefts[i].getId() == member1.getId()) k = i;
-
-            if(member2!=null )
+            if(lefts[i]!=null)
             {
-                if (lefts[i].getId() == member2.getId()) l = i;
-            }    
-            
+                if (lefts[i].getId() == member1.getId()) k = i;
+
+                if(member2!=null )
+                {
+                    if (lefts[i].getId() == member2.getId()) l = i;
+                } 
+            }          
         }
 
         // Find an empty spot on the right side to move the family member1
