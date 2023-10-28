@@ -10,7 +10,7 @@ public class State
     private Family[] rights;
     private int cost ; //cost till here 
 
-    private static boolean torch; //true means that the torch is at the starting side 
+    private boolean torch; //true means that the torch is at the starting side 
     
     private Family[] operator = new Family[2]; // we accept at most 2 people on the bridge at the same time.
 
@@ -88,7 +88,7 @@ public class State
 
             this.cost = 0;
             this.dimension = dimension;
-            State.torch = true;
+            torch = true;
                         
             this.rights = new Family[this.dimension];
             this.lefts = new Family[this.dimension];
@@ -105,8 +105,8 @@ public class State
         {
             //the example at the project
             this.cost = 0;
-            this.dimension = 5;
-            State.torch = true;
+            this.dimension = 3;
+            torch = true;
                         
             this.rights = new Family[this.dimension];
             this.lefts = new Family[this.dimension];
@@ -120,8 +120,27 @@ public class State
             this.rights[0] = son1;
             this.rights[1] = son2;
             this.rights[2] = mother;
-            this.rights[3] = father;
-            this.rights[4] = grandfather;            
+           // this.rights[3] = father;
+            //this.rights[4] = grandfather;     
+            // //the example at the project
+            // this.cost = 0;
+            // this.dimension = 5;
+            // State.torch = true;
+                        
+            // this.rights = new Family[this.dimension];
+            // this.lefts = new Family[this.dimension];
+           
+            // Family son1 = new Family("Son1", 1) ;
+            // Family son2 = new Family("Son2", 3) ;
+            // Family mother = new Family("Mother", 6) ;
+            // Family father = new Family("Father", 8) ;
+            // Family grandfather = new Family("Grandfather", 12) ;            
+
+            // this.rights[0] = son1;
+            // this.rights[1] = son2;
+            // this.rights[2] = mother;
+            // this.rights[3] = father;
+            // this.rights[4] = grandfather;            
         }
     }
 
@@ -136,9 +155,6 @@ public class State
     }
 
 
-   
-
-    // TODO CHECK IF NEEDED
     public void setLefts(Family[] lefts) {
         this.dimension = lefts.length;
         this.lefts = new Family[this.dimension];
@@ -153,7 +169,6 @@ public class State
         return lefts;
     }
 
-    // TODO CHECK IF NEEDED
     public void setRights(Family[] rights) {
         this.dimension = rights.length;
         this.rights = new Family[this.dimension];
@@ -168,7 +183,7 @@ public class State
         return rights;
     }
 
-
+    //TODO CHECK IF NEEDED
     int getDimension() 
 	{
         return this.dimension;
@@ -178,7 +193,6 @@ public class State
 	{
         this.dimension = dimension;
     }
-
 
     public State getFather()
 	{
@@ -190,15 +204,12 @@ public class State
         this.father = father;
     }
     
-    
     ArrayList<State> getChildren()
     {
         ArrayList<State> children = new ArrayList<>();
         State child = new State(this.rights, this.lefts, this.cost, this.father, this.operator); //copy constructor
         
-        
         ArrayList<List<Family>> combos = new ArrayList<>();
-
         if(torch)
         {   
             combos = generateCombinations(child.rights);
@@ -226,9 +237,6 @@ public class State
         return children;
     }
 
-    
-
-   
     // Generating every possible combination of the family members. (Ex {Father, son}, {son, mother} etc)
     private ArrayList<List<Family>> generateCombinations(Family[] sourceSide) {
         ArrayList<List<Family>> combinations = new ArrayList<>();
@@ -261,7 +269,7 @@ public class State
         }
 
 
-        //finding the members to move from the array
+        //finding the members to move from the Family array
         int k = 0;
         int l = 0;
         for (int i = 0; i < rights.length; i++) 
@@ -280,7 +288,6 @@ public class State
         { 
             if (lefts[j] == null) 
             {
-               // this.operator[count] = this.rights[k]; // Update the operator with the family member moving left
                 this.lefts[j] = this.rights[k];
                 this.rights[k] = null;           //remove family member who moved left
                 count++;
@@ -294,7 +301,6 @@ public class State
             { 
                 if (this.lefts[j] == null) 
                 {
-                    //this.operator[count] = this.rights[l]; // Update the operator with the family member moving left
                     this.lefts[j] = this.rights[l];
                     this.rights[l] = null;           //remove family member who moved left
                     break;
@@ -322,7 +328,7 @@ public class State
 
     void moveRight(List<Family> members_to_move)
     {
-        //TODO CHECK FOR MISTAKES
+        this.setOperator(members_to_move);
        // Move at most 2 family members from the left side to the right side.
         int count = 0;
         Family member1 = members_to_move.get(0);
@@ -352,7 +358,6 @@ public class State
         { 
             if (rights[j] == null) 
             {
-                operator[count] = lefts[k]; // Update the operator with the family member moving left
                 rights[j] = lefts[k];
                 lefts[k] = null;           //remove family member who moved left
                 count++;
@@ -360,19 +365,21 @@ public class State
             }
         }
         //Find an empty spot on theright side to move the family member2 if it exists
-        if(members_to_move.get(1)!=null)
+        if(members_to_move.size()==2)
         {
-            for (int j = 0; j < lefts.length; j++)
+            for (int j = 0; j < rights.length; j++)
             { 
-                if (lefts[j] == null) 
+                if (rights[j] == null) 
                 {
-                    operator[count] = lefts[l]; // Update the operator with the family member moving left
                     rights[j] = lefts[l];
                     lefts[l] = null;           //remove family member who moved left
                     break;
                 }
             }
         }
+        this.setLefts(lefts);
+        this.setRights(rights);
+
         torch = true;
         int a = 0;
         int b = 0;
@@ -385,7 +392,6 @@ public class State
             b = operator[1].getCrossingTime();
         }
         increaseCost(Math.max(a, b)); //increase the cost
-        
     }
     
 

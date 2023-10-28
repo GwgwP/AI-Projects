@@ -17,7 +17,7 @@ public class Family {
 
     private void generateUniqueId() {
         do {
-            id = random.nextInt(100000); // Adjust the range as needed
+            id = random.nextInt(100000);
         } while (usedIds.contains(id));
         usedIds.add(id);
     }
