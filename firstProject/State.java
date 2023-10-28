@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -7,14 +8,14 @@ public class State
 {
     private Family[] lefts; 
     private Family[] rights;
-
+    private int cost ; //cost till here 
 
     private static boolean torch; //true means that the torch is at the starting side 
     
     private Family[] operator = new Family[2]; // we accept at most 2 people on the bridge at the same time.
 
-    private int g ; //cost till here 
-    
+   
+
     private int dimension;
 
     private State father = null;
@@ -28,9 +29,9 @@ public class State
 
         if(randomized)
         {
-            //TODO 
-            // give random family and times
-            // List of family member names
+            // give random family names and times
+            
+            // List of family members
 
             List<String> familyMembers = new ArrayList<>();
             familyMembers.add("Father");
@@ -57,7 +58,7 @@ public class State
             // Create an array to store family members and their crossing times
             Family[] family = new Family[dimension];
             
-            if(dimension <=10 )
+            if(dimension <=10 ) //we dont have duplicates (ex 2 fathers)
             {
                 // Generate random family members with names and crossing times
                 for (int i = 0; i < dimension; i++) 
@@ -85,7 +86,7 @@ public class State
             }
             
 
-            this.g = 0;
+            this.cost = 0;
             this.dimension = dimension;
             State.torch = true;
                         
@@ -102,7 +103,8 @@ public class State
         }
         else
         {
-            this.g = 0;
+            //the example at the project
+            this.cost = 0;
             this.dimension = 5;
             State.torch = true;
                         
@@ -124,11 +126,13 @@ public class State
     }
 
     // constructor for creating copy of the state.
-     State(Family[] fam_r, Family[] fam_l, int g)
+    private State(Family[] fam_r, Family[] fam_l, int g, State father, Family[] oper)
     {
         this.setRights(fam_r);
         this.setLefts(fam_l);
-        this.g=g;
+        this.cost=g;
+        this.father = father;
+        this.operator = oper;
     }
 
 
@@ -176,93 +180,196 @@ public class State
     }
 
 
-    State getFather()
+    public State getFather()
 	{
         return this.father;
     }
 
-    void setFather(State father)
+    private void setFather(State father)
 	{
         this.father = father;
     }
-
-
+    
+    
     ArrayList<State> getChildren()
     {
         ArrayList<State> children = new ArrayList<>();
-        State child = new State(this.rights, this.lefts, this.g);  // very important to create a copy of current state before each move.
-       
-        if(child.moveLeft())
-        {
-			child.setFather(this);
-            children.add(child);
-        }
-        child = new State(this.rights, this.lefts, this.g); // very important to create a copy of current state after each move.
-        if(child.moveRight())
-        {
-			child.setFather(this);
-            children.add(child);
-        }
-        return children;
-    }
-
-
-    boolean moveLeft()
-    {
-        if (!(torch && rights.length!=0)) return false;
-        //if the torch is on the right side and there are still people on the right side then we can move left 
+        State child = new State(this.rights, this.lefts, this.cost, this.father, this.operator); //copy constructor
         
-        // Move at most 2 family members from the right side to the left side.
-        int count = 0;
-        for (int i = 0; i < rights.length && count < 2; i++) {
-            if (rights[i] != null) { //if there is someone right
-                // Find an empty spot on the left side to move the family member
-                for (int j = 0; j < lefts.length; j++) {
-                    if (lefts[j] == null) {
-                        operator[count] = rights[i]; // Update the operator with the family member moving left
-                        lefts[j] = rights[i];
-                        rights[i] = null;           //remove family member who moved left
-                        count++;
-                        break;
-                    }
-                }
+        
+        ArrayList<List<Family>> combos = new ArrayList<>();
+
+        if(torch)
+        {   
+            combos = generateCombinations(child.rights);
+
+            for (List<Family> combination : combos) {
+                // Process the combination
+                child.setFather(this);
+                child.moveLeft(combination);
+                children.add(child);
+                child = new State(this.rights, this.lefts, this.cost, this.father, this.operator); //restore the initiail state of the child
+            }
+        }
+        else
+        {
+            combos = generateCombinations(child.lefts);
+            for (List<Family> combination : combos) {
+                // Process the combination
+                child.setFather(this);
+                child.moveRight(combination);
+                children.add(child);
+                child = new State(this.rights, this.lefts, this.cost, this.father, this.operator); //restore the initiail state of the child
             }
         }
 
-
-        torch = false; // Move the torch to the left side
-        int a=0;
-        int b=0;
-        if ( operator[0]!= null)
-        {
-            a = operator[0].getCrossingTime();
-        }
-        if(operator[1]!= null)
-        {
-            b = operator[1].getCrossingTime();
-        }
-
-        this.g += a+b; // Increase the cost
-        return true;
+        return children;
     }
 
-    boolean moveRight()
-    {
-        if (!(!torch && lefts.length!=0)) return false;
+    
 
-        //if the torch is on the left side and there are still people on the left side then we can move Right.
+   
+    // Generating every possible combination of the family members. (Ex {Father, son}, {son, mother} etc)
+    private ArrayList<List<Family>> generateCombinations(Family[] sourceSide) {
+        ArrayList<List<Family>> combinations = new ArrayList<>();
+        int n = sourceSide.length;
+        
+        for (int i = 0; i < n; i++) {
+            // one person moving
+            combinations.add(List.of(sourceSide[i]));
+
+            for (int j = i + 1; j < n; j++) {
+                // Consider two people moving
+                combinations.add(List.of(sourceSide[i], sourceSide[j]));
+            }
+        }
+       
+        return combinations;
+    }
+
+    void moveLeft(List<Family> members_to_move)
+    {        
+        this.setOperator(members_to_move);
+        // Move at most 2 family members from the right side to the left side.
         int count = 0;
-        for(int i = 0; i <lefts.length && count<2; i++){
-            if (lefts[i] != null){ //if we have people on the left
-                // Find an empty spot on the right side to move the family member
-                for (int j = 0; j<rights.length; j++){
-                    if(rights[j]==null){
-                    operator[count] = lefts[i];
-                    rights[j] = lefts[i];
-                    lefts[i] = null;
-                    count++;
+        Family member1 = members_to_move.get(0);
+        Family member2 = null;
+
+        if(members_to_move.size()==2)
+        {
+            member2 = members_to_move.get(1);
+        }
+
+
+        //finding the members to move from the array
+        int k = 0;
+        int l = 0;
+        for (int i = 0; i < rights.length; i++) 
+        {
+            if (this.rights[i].getId() == member1.getId()) k = i;
+
+            if(member2!=null )
+            {
+                if (this.rights[i].getId() == member2.getId()) l = i;
+            }    
+            
+        }
+
+        // Find an empty spot on the left side to move the family member1
+        for (int j = 0; j < lefts.length; j++)
+        { 
+            if (lefts[j] == null) 
+            {
+               // this.operator[count] = this.rights[k]; // Update the operator with the family member moving left
+                this.lefts[j] = this.rights[k];
+                this.rights[k] = null;           //remove family member who moved left
+                count++;
+                break;
+            }
+        }
+        //Find an empty spot on the left side to move the family member2 if it exists
+        if(members_to_move.size()==2)
+        {
+            for (int j = 0; j < lefts.length; j++)
+            { 
+                if (this.lefts[j] == null) 
+                {
+                    //this.operator[count] = this.rights[l]; // Update the operator with the family member moving left
+                    this.lefts[j] = this.rights[l];
+                    this.rights[l] = null;           //remove family member who moved left
                     break;
-                    }
+                }
+            }
+        }
+        this.setLefts(lefts);
+        this.setRights(rights);
+
+        torch = false; // Move the torch to the left side
+
+        int a=0;
+        int b=0;
+
+        if ( this.operator[0]!= null)
+        {
+            a = this.operator[0].getCrossingTime();
+        }
+        if(this.operator[1]!= null)
+        {
+            b = this.operator[1].getCrossingTime();
+        }        
+        this.increaseCost(Math.max(a, b));
+    }
+
+    void moveRight(List<Family> members_to_move)
+    {
+        //TODO CHECK FOR MISTAKES
+       // Move at most 2 family members from the left side to the right side.
+        int count = 0;
+        Family member1 = members_to_move.get(0);
+        Family member2 = null;
+
+        if(members_to_move.size()==2)
+        {
+            member2 = members_to_move.get(1);
+        }
+
+        int k = 0;
+        int l = 0;
+        
+        for (int i = 0; i < lefts.length; i++) 
+        {
+            if (lefts[i].getId() == member1.getId()) k = i;
+
+            if(member2!=null )
+            {
+                if (lefts[i].getId() == member2.getId()) l = i;
+            }    
+            
+        }
+
+        // Find an empty spot on the right side to move the family member1
+        for (int j = 0; j < rights.length; j++)
+        { 
+            if (rights[j] == null) 
+            {
+                operator[count] = lefts[k]; // Update the operator with the family member moving left
+                rights[j] = lefts[k];
+                lefts[k] = null;           //remove family member who moved left
+                count++;
+                break;
+            }
+        }
+        //Find an empty spot on theright side to move the family member2 if it exists
+        if(members_to_move.get(1)!=null)
+        {
+            for (int j = 0; j < lefts.length; j++)
+            { 
+                if (lefts[j] == null) 
+                {
+                    operator[count] = lefts[l]; // Update the operator with the family member moving left
+                    rights[j] = lefts[l];
+                    lefts[l] = null;           //remove family member who moved left
+                    break;
                 }
             }
         }
@@ -277,9 +384,30 @@ public class State
         {
             b = operator[1].getCrossingTime();
         }
-        this.g += a+b; //increase the cost
+        increaseCost(Math.max(a, b)); //increase the cost
         
-        return true;
+    }
+    
+
+    public Family[] getOperator() {
+        return operator;
+    }
+
+    public void setOperator(List<Family> oper) {
+        this.operator[0] = oper.get(0);
+        if (oper.size()>1) {
+            this.operator[1] = oper.get(1);
+        }
+    }
+
+
+    
+    public int getCost() {
+        return cost;
+    }
+
+    public void increaseCost(int cost) {
+        this.cost += cost;
     }
 
     boolean isFinal()
@@ -310,7 +438,7 @@ public class State
     public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("==============================================================================================================\n");
-    sb.append("\t\t\t\t\t\tCost: ").append(g);
+    sb.append("\t\t\t\t\t\tCost: ").append(this.cost);
     sb.append("\n\t\t\t\t\t\tDimension: ").append(dimension).append("\n\n\n");
     
     // Print the left side family members if not null
