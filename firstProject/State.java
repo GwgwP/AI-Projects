@@ -151,6 +151,68 @@ public class State
         this.operator = oper;
     }
 
+    public State HeuristicManager(ArrayList<State> children){
+
+        State bestState;
+        int min=Integer.MAX_VALUE;
+        for (State st : children){
+            int cost1 = st.heuristic1();
+            int cost2= st.heuristic2a();
+            //
+
+            //int max = cost1;
+            int g = st.father.cost;
+
+            int f =  g + max;
+            if (f<min){
+                min  = f;
+                bestState = st;
+            }
+        }
+        return bestState;
+    }
+
+    // Heuristic 1 - ceil(n/2)
+    private int heuristic1(){
+        return (int) Math.ceil(crowdRight()/2);
+    }
+
+    // Heuristic 2 -  Right: 2n-3
+    private int heuristic2a(){
+        return (int) Math.ceil(2* crowdRight() - 3);
+    }
+
+    // Heuristic 2 - Left: 2n
+    private int heuristic2b(){
+        return (int) Math.ceil(2* crowdLeft());
+    }
+
+    // // Heuristic 3 Left
+    // private int heuristic3a(){
+    //     return crowdLeft();
+    // }
+
+    // Heuristic 3 Right
+    private int heuristic3b(){
+        return crowdRight();
+    }
+
+
+    private int crowdLeft(){
+        int sum=0;
+        for (Family fam:lefts){
+            if (fam!=null) sum++;
+        }
+        return sum;
+    }
+    private int crowdRight(){
+        int sum=0;
+        for (Family fam:rights){
+            if (fam!=null) sum++;
+        }
+        return sum;
+    }
+
 
     public void setLefts(Family[] lefts) {
         this.dimension = lefts.length;

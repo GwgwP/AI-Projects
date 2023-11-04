@@ -28,7 +28,7 @@ import java.util.HashSet;
      * 
      */
 
-    State BestFSClosedSet(State initialState, int heuristic)
+    State Astar(State initialState)
     {
         if(initialState.isFinal()) return initialState;
         // step 1: put initial state in the frontier.
@@ -46,7 +46,10 @@ import java.util.HashSet;
             if(!this.closedSet.contains(currentState))
             {
                 this.closedSet.add(currentState);
-                this.frontier.addAll(currentState.getChildren(heuristic));
+                ArrayList<State> children = new ArrayList<>();
+                children = currentState.getChildren();
+                State best = currentState.HeuristicManager(children);
+                this.frontier.add(best);
                 // step 6: sort the frontier based on the heuristic score to get best as first
                 Collections.sort(this.frontier); // sort the frontier to get best as first
             }
