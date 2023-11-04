@@ -14,11 +14,9 @@ public class Main
         //System.out.println(initState.getChildren().get(0).getChildren());
         for (State st : initState.getChildren())
         {
-            for(State st2 : st.getChildren())
-            {   
-                System.out.println(st2);
+           System.out.println(st);
         
-            }  
+             
         }
 
 
