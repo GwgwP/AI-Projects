@@ -48,8 +48,7 @@ public class State
             // Shuffle the list of all family names
             Collections.shuffle(familyMembers);
             
-            // Number of family members
-    
+        
             
             // Random number generator
             Random random = new Random();
@@ -104,28 +103,17 @@ public class State
         else
         {
             //the example at the project
-            this.cost = 0;
           
-            torch = true;
-                        
-            this.rights = new Family[this.dimension];
-            this.lefts = new Family[this.dimension];
+            this.torch = true;
+            this.operator[0] = null;
+            this.operator[1] = null;
            
-            // Family son1 = new Family("Son1", 1) ;
-            // Family son2 = new Family("Son2", 3) ;
-            // Family mother = new Family("Mother", 6) ;
-            // Family father = new Family("Father", 8) ;
-            // Family grandfather = new Family("Grandfather", 12) ;            
-
-            // this.rights[3] = father;
-            // this.rights[4] = grandfather;     
-            //the example at the project
             this.cost = 0;
             this.dimension = 5;
-            
-                        
+                      
             this.rights = new Family[this.dimension];
             this.lefts = new Family[this.dimension];
+            
             
             Family son1 = new Family("Son1", 1) ;
             Family son2 = new Family("Son2", 3) ;
@@ -153,7 +141,7 @@ public class State
 
     public State HeuristicManager(ArrayList<State> children){
 
-        State bestState = null;
+        State bestState=null;
         int min=Integer.MAX_VALUE;
         for (State st : children){
             int cost1 = st.heuristic1();
@@ -263,21 +251,25 @@ public class State
         this.father = father;
     }
     
-    ArrayList<State> getChildren()
-    {
-        ArrayList<State> children = new ArrayList<>();
+    public ArrayList<State> getChildren(){
+
+    ArrayList<State> children = new ArrayList<>();
         State child = new State(this.rights, this.lefts, this.cost, this.father, this.operator); //copy constructor
         
         ArrayList<List<Family>> combos = new ArrayList<>();
+
         if(torch)
         {   
             combos = generateCombinations(child.rights);
 
             for (List<Family> combination : combos) {
                 // Process the combination
-                child.setFather(this);
+                child.father = this;
+                child.operator[0] = combination.get(0);
+                child.operator[1] = (combination.size()!=1)? combination.get(1) : null; 
                 child.moveLeft(combination);
                 children.add(child);
+                
                 child = new State(this.rights, this.lefts, this.cost, this.father, this.operator); //restore the initiail state of the child
             }
         }
@@ -286,7 +278,9 @@ public class State
             combos = generateCombinations(child.lefts);
             for (List<Family> combination : combos) {
                 // Process the combination
-                child.setFather(this);
+                child.father = this;
+                child.operator[0] = combination.get(0);
+                child.operator[1] = (combination.size()!=1)? combination.get(1) : null; 
                 child.moveRight(combination);
                 children.add(child);
                 child = new State(this.rights, this.lefts, this.cost, this.father, this.operator); //restore the initiail state of the child
@@ -321,147 +315,86 @@ public class State
         return combinations;
     }
 
-    void moveLeft(List<Family> members_to_move)
-    {        
-        this.setOperator(members_to_move);
+    void moveLeft(List<Family> members_to_move) {  
+        
         // Move at most 2 family members from the right side to the left side.
-        int count = 0;
+    
         Family member1 = members_to_move.get(0);
-        Family member2 = null;
-
-        if(members_to_move.size()==2)
-        {
-            member2 = members_to_move.get(1);
+        Family member2 = (members_to_move.size() == 2) ? members_to_move.get(1) : null;
+    
+        // Find the indexes of the members to move from the Family array
+        int k = findFamilyIndex(member1, rights);
+        int l = (member2 != null) ? findFamilyIndex(member2, rights) : -1;
+    
+        // Find an empty spot on the left side to move family member1
+        int j = findEmptySpot(lefts); //we are sure that there will be an empty spot because we have 2 arrays of the same dimension
+        lefts[j] = rights[k];
+        rights[k] = null;  // Remove family member who moved left
+    
+    
+        // Find an empty spot on the left side to move family member2 if it exists
+        if (member2 != null) {
+            j = findEmptySpot(lefts);
+            lefts[j] = rights[l];
+            rights[l] = null;  // Remove family member who moved left
         }
-
-
-        //finding the members to move from the Family array
-        int k = 0;
-        int l = 0;
-        for (int i = 0; i < rights.length; i++) 
-        {
-            if(this.rights[i]!=null)
-            {
-                if (this.rights[i].getId() == member1.getId()) k = i;
-
-                if(member2!=null )
-                {
-                    if (this.rights[i].getId() == member2.getId()) l = i;
-                }
-            }              
-        }
-
-        // Find an empty spot on the left side to move the family member1
-        for (int j = 0; j < lefts.length; j++)
-        { 
-            if (lefts[j] == null) 
-            {
-                this.lefts[j] = this.rights[k];
-                this.rights[k] = null;           //remove family member who moved left
-                count++;
-                break;
-            }
-        }
-        //Find an empty spot on the left side to move the family member2 if it exists
-        if(members_to_move.size()==2)
-        {
-            for (int j = 0; j < lefts.length; j++)
-            { 
-                if (this.lefts[j] == null) 
-                {
-                    this.lefts[j] = this.rights[l];
-                    this.rights[l] = null;           //remove family member who moved left
-                    break;
-                }
-            }
-        }
-        this.setLefts(lefts);
-        this.setRights(rights);
-
-        torch = false; // Move the torch to the left side
-
-        int a=0;
-        int b=0;
-
-        if ( this.operator[0]!= null)
-        {
-            a = this.operator[0].getCrossingTime();
-        }
-        if(this.operator[1]!= null)
-        {
-            b = this.operator[1].getCrossingTime();
-        }        
-        this.increaseCost(Math.max(a, b));
+    
+        torch = false;  // Move the torch to the left side
+    
+        int a = member1.getCrossingTime();
+        int b = (member2 != null) ? member2.getCrossingTime() : 0;
+    
+        increaseCost(Math.max(a, b));
     }
 
-    void moveRight(List<Family> members_to_move)
-    {
-        this.setOperator(members_to_move);
-       // Move at most 2 family members from the left side to the right side.
-        int count = 0;
-        Family member1 = members_to_move.get(0);
-        Family member2 = null;
-
-        if(members_to_move.size()==2)
-        {
-            member2 = members_to_move.get(1);
-        }
-
-        int k = 0;
-        int l = 0;
+    void moveRight(List<Family> members_to_move) {        
         
-        for (int i = 0; i < lefts.length; i++) 
-        {
-            if(lefts[i]!=null)
-            {
-                if (lefts[i].getId() == member1.getId()) k = i;
+        // Move at most 2 family members from the right side to the left side.
+    
+        Family member1 = members_to_move.get(0);
+        Family member2 = (members_to_move.size() == 2) ? members_to_move.get(1) : null;
+    
+        // Find the indices of the members to move from the Family array
+        int k = findFamilyIndex(member1, lefts);
+        int l = (member2 != null) ? findFamilyIndex(member2, lefts) : -1;
+    
+        // Find an empty spot on the right side to move family member1
+        int j = findEmptySpot(rights);
+    
+        rights[j] = lefts[k];
+        lefts[k] = null;  // Remove family member who moved right
 
-                if(member2!=null )
-                {
-                    if (lefts[i].getId() == member2.getId()) l = i;
-                } 
-            }          
-        }
+        // Find an empty spot on the right side to move family member2 if it exists
+        if (member2 != null) {
+            j = findEmptySpot(rights);
+            rights[j] = lefts[l];
+            lefts[l] = null;  // Remove family member who moved left
 
-        // Find an empty spot on the right side to move the family member1
-        for (int j = 0; j < rights.length; j++)
-        { 
-            if (rights[j] == null) 
-            {
-                rights[j] = lefts[k];
-                lefts[k] = null;           //remove family member who moved left
-                count++;
-                break;
-            }
         }
-        //Find an empty spot on theright side to move the family member2 if it exists
-        if(members_to_move.size()==2)
+    
+        torch = true;  // Move the torch to the left side
+    
+        int a = member1.getCrossingTime();
+        int b = (member2 != null) ? member2.getCrossingTime() : 0;
+    
+        increaseCost(Math.max(a, b));
+    }
+    
+    //  Find the index of a Family member in the array
+    private int findFamilyIndex(Family member, Family[] array) {
+        for (int i = 0; i < this.dimension; i++) 
         {
-            for (int j = 0; j < rights.length; j++)
-            { 
-                if (rights[j] == null) 
-                {
-                    rights[j] = lefts[l];
-                    lefts[l] = null;           //remove family member who moved left
-                    break;
-                }
-            }
+            if (array[i] != null && array[i].getId() == member.getId()) return i;
         }
-        this.setLefts(lefts);
-        this.setRights(rights);
-
-        torch = true;
-        int a = 0;
-        int b = 0;
-        if(operator[0]!= null)
-        {
-            a = operator[0].getCrossingTime();
+        return -1; // it will never reach here
+    }
+    
+    // Find an emptyy spot in the Family array
+    private int findEmptySpot(Family[] array) {
+        for (int i = 0; i < this.dimension; i++) {
+            if (array[i] == null) return i;
         }
-        if(operator[1]!= null)
-        {
-            b = operator[1].getCrossingTime();
-        }
-        increaseCost(Math.max(a, b)); //increase the cost
+        return -1;  // it will never reach here
     }
     
 
@@ -469,12 +402,12 @@ public class State
         return operator;
     }
 
-    public void setOperator(List<Family> oper) {
-        this.operator[0] = oper.get(0);
-        if (oper.size()>1) {
-            this.operator[1] = oper.get(1);
-        }
-    }
+    // public void setOperator(List<Family> oper) {
+    //     this.operator[0] = oper.get(0);
+    //     if (oper.size()==2) {
+    //         this.operator[1] = oper.get(1);
+    //     }
+    // }
 
 
     

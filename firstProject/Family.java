@@ -41,5 +41,9 @@ public class Family {
     public int getId() {
         return id;
     }
+    public String toString()
+    {
+        return name;
+    }
 }
 
