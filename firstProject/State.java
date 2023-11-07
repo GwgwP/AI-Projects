@@ -153,14 +153,14 @@ public class State
 
     public State HeuristicManager(ArrayList<State> children){
 
-        State bestState;
+        State bestState = null;
         int min=Integer.MAX_VALUE;
         for (State st : children){
             int cost1 = st.heuristic1();
             int cost2= st.heuristic2a();
             //
 
-            //int max = cost1;
+            int max = cost1;
             int g = st.father.cost;
 
             int f =  g + max;
