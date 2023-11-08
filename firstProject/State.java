@@ -1,8 +1,9 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 public class State
 {
@@ -12,9 +13,7 @@ public class State
 
     private boolean torch; //true means that the torch is at the starting side 
     
-    private Family[] operator = new Family[2]; // we accept at most 2 people on the bridge at the same time.
-
-   
+    private List <Family> operator = new ArrayList<>(); // we accept at most 2 people on the bridge at the same time.
 
     private int dimension;
 
@@ -24,8 +23,7 @@ public class State
     State(int dimension, boolean randomized)
     {
         //if we are in the initial state we dont have any operator that led to this initial state.
-        operator[0] = null;
-        operator[1] = null;
+        this.operator.add(null);
 
         if(randomized)
         {
@@ -105,8 +103,8 @@ public class State
             //the example at the project
           
             this.torch = true;
-            this.operator[0] = null;
-            this.operator[1] = null;
+            //this.operator[0] = null;
+            //this.operator[1] = null;
            
             this.cost = 0;
             this.dimension = 5;
@@ -130,7 +128,7 @@ public class State
     }
 
     // constructor for creating copy of the state.
-    private State(Family[] fam_r, Family[] fam_l, int g, State father, Family[] oper)
+    private State(Family[] fam_r, Family[] fam_l, int g, State father, List<Family> oper)
     {
         this.setRights(fam_r);
         this.setLefts(fam_l);
@@ -253,7 +251,7 @@ public class State
     
     public ArrayList<State> getChildren(){
 
-    ArrayList<State> children = new ArrayList<>();
+        ArrayList<State> children = new ArrayList<>();
         State child = new State(this.rights, this.lefts, this.cost, this.father, this.operator); //copy constructor
         
         ArrayList<List<Family>> combos = new ArrayList<>();
@@ -265,11 +263,9 @@ public class State
             for (List<Family> combination : combos) {
                 // Process the combination
                 child.father = this;
-                child.operator[0] = combination.get(0);
-                child.operator[1] = (combination.size()!=1)? combination.get(1) : null; 
                 child.moveLeft(combination);
+                child.operator = combination;
                 children.add(child);
-                
                 child = new State(this.rights, this.lefts, this.cost, this.father, this.operator); //restore the initiail state of the child
             }
         }
@@ -279,9 +275,8 @@ public class State
             for (List<Family> combination : combos) {
                 // Process the combination
                 child.father = this;
-                child.operator[0] = combination.get(0);
-                child.operator[1] = (combination.size()!=1)? combination.get(1) : null; 
                 child.moveRight(combination);
+                child.operator = combination;
                 children.add(child);
                 child = new State(this.rights, this.lefts, this.cost, this.father, this.operator); //restore the initiail state of the child
             }
@@ -344,7 +339,7 @@ public class State
         int a = member1.getCrossingTime();
         int b = (member2 != null) ? member2.getCrossingTime() : 0;
     
-        increaseCost(Math.max(a, b));
+        this.increaseCost(Math.max(a, b));
     }
 
     void moveRight(List<Family> members_to_move) {        
@@ -377,7 +372,7 @@ public class State
         int a = member1.getCrossingTime();
         int b = (member2 != null) ? member2.getCrossingTime() : 0;
     
-        increaseCost(Math.max(a, b));
+        this.increaseCost(Math.max(a, b));
     }
     
     //  Find the index of a Family member in the array
@@ -398,16 +393,9 @@ public class State
     }
     
 
-    public Family[] getOperator() {
+    public List<Family> getOperator() {
         return operator;
     }
-
-    // public void setOperator(List<Family> oper) {
-    //     this.operator[0] = oper.get(0);
-    //     if (oper.size()==2) {
-    //         this.operator[1] = oper.get(1);
-    //     }
-    // }
 
 
     
@@ -435,12 +423,54 @@ public class State
 
 
     // override this for proper hash set comparisons.
-    //for the closed set probsbly?!
+    //for the closed set.
     @Override
-    public boolean equals(Object obj)
-    {
-        //TODO
-        return false;
+    public boolean equals(Object obj) {
+        if (this == obj)
+        {
+            return true; // It's the same instance
+        }
+        if (obj == null || this.getClass() != obj.getClass())
+        {
+            return false; // Object is not a State or is null
+        }
+
+        State otherState = (State) obj;
+        
+        // Create sets of unique family member codes for left and right sides
+        Set<Integer> leftsUniqueCodes = new HashSet<>();
+        Set<Integer> rightsUniqueCodes = new HashSet<>();
+        
+        for (Family family : lefts) {
+            if (family != null) {
+                leftsUniqueCodes.add(family.getId());
+            }
+        }
+        
+        for (Family family : rights) {
+            if (family != null) {
+                rightsUniqueCodes.add(family.getId());
+            }
+        }
+        
+        // Create sets of unique family member codes for the other state
+        Set<Integer> otherLeftsUniqueCodes = new HashSet<>();
+        Set<Integer> otherRightsUniqueCodes = new HashSet<>();
+        
+        for (Family family : otherState.lefts) {
+            if (family != null) {
+                otherLeftsUniqueCodes.add(family.getId());
+            }
+        }
+        
+        for (Family family : otherState.rights) {
+            if (family != null) {
+                otherRightsUniqueCodes.add(family.getId());
+            }
+        }
+        
+        // Check if the sets of unique family member codes are the same
+        return leftsUniqueCodes.equals(otherLeftsUniqueCodes) && rightsUniqueCodes.equals(otherRightsUniqueCodes);
     }
 
     @Override
