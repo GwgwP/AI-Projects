@@ -128,60 +128,135 @@ public class State
     }
 
     // constructor for creating copy of the state.
-    private State(Family[] fam_r, Family[] fam_l, int g, State father, List<Family> oper)
+    private State(Family[] fam_r, Family[] fam_l, int cost, State father, List<Family> oper)
     {
         this.setRights(fam_r);
         this.setLefts(fam_l);
-        this.cost=g;
+        this.cost=cost;
         this.father = father;
         this.operator = oper;
     }
 
+    //Returns the best of the heuristic functions.
     public State HeuristicManager(ArrayList<State> children){
 
         State bestState=null;
         int min=Integer.MAX_VALUE;
+
         for (State st : children){
-            int cost1 = st.heuristic1();
-            int cost2= st.heuristic2a();
-            //
 
-            int max = cost1;
+            ArrayList<Integer> costs = new ArrayList<Integer>();
+            costs.add(st.heuristic1());
+            costs.add(st.heuristic2());
+            costs.add(st.heuristic3());
+            costs.add(st.heuristic4());
+
+            int max = costs.get(0);
+            for (Integer k:costs){
+                if (k>max) max=k;
+            }
             int g = st.father.cost;
-
+            //
             int f =  g + max;
             if (f<min){
                 min  = f;
                 bestState = st;
             }
-        }
+        }   
         return bestState;
     }
-
-    // Heuristic 1 - ceil(n/2)
-    private int heuristic1(){
-        return (int) Math.ceil(crowdRight()/2);
+    
+    //==========================SOS! Isos xreiastei na valoyme epiploen orisma placement gia na kseroume an vriskomaste aristera h deksia=========//
+    
+    //===================PROVLIMA: oi euretikes exoyn diaforetiko "euros" metrisis. oi 2 protes metroun to synoliko kostos mexri na teleivsei o algorithmos.
+    //===================oi alles mono gia to sygkekrimeno state.
+    
+        /*  Heuristic 1 - suppose that NOT only 2 people can cross the bridge, 
+     also they don't need someone from the left side to come and take them with the torch
+     so the cost for everyone on the right side to pass to the left side
+     is the max value of the rights.
+    */
+     private int heuristic1(){
+        int max =-1;
+        for (Family fam:rights){
+            if (fam.getCrossingTime()>max) max = fam.getCrossingTime();
+        }
+        return max;
     }
 
-    // Heuristic 2 -  Right: 2n-3
-    private int heuristic2a(){
-        return (int) Math.ceil(2* crowdRight() - 3);
+    /*  Heuristic 2 - suppose that NOT only 2 people can cross the bridge, 
+     but they need someone from the left side to come and take them with the torch.
+     I choose min from the left side, max from the right side, so that i don't overestimate.
+    */
+     private int heuristic2(){
+        int maxR =-1;
+        int minL = Integer.MAX_VALUE;
+        for (Family fam:rights){
+            if (fam.getCrossingTime()>maxR) maxR = fam.getCrossingTime();
+        }
+        for (Family fam:lefts){
+            if (fam.getCrossingTime()<minL) minL = fam.getCrossingTime();
+        }
+        return minL + maxR;
     }
 
-    // Heuristic 2 - Left: 2n
-    private int heuristic2b(){
-        return (int) Math.ceil(2* crowdLeft());
+    /*  Heuristic 3 - If I'm on the left side, i always choose the min value to go back
+    */
+     private int heuristic3(){
+        int min = Integer.MAX_VALUE;
+        for (Family fam:lefts){
+            if (fam.getCrossingTime()<min) min = fam.getCrossingTime();
+        }
+        return min;
     }
+
+    /*  Heuristic 4 - If I'm on the right side, i always choose the min combination to go to the left
+    */
+     private int heuristic4(){
+        int min1 = Integer.MAX_VALUE;
+        int min2 = Integer.MAX_VALUE;
+
+        for (Family fam : rights) {
+            int crossingTime = fam.getCrossingTime();
+
+            if (rights.length == 1) {
+            return crossingTime;
+            }
+
+            if (crossingTime < min1) {
+                min2 = min1;
+                min1 = crossingTime;
+            } else if (crossingTime < min2) {
+                min2 = crossingTime;
+            }
+        }
+        return Math.max(min1, min2); 
+    }
+
+
+    // // Heuristic 1 - ceil(n/2)
+    // private int heuristic1(){
+    //     return (int) Math.ceil(crowdRight()/2);
+    // }
+    // // Heuristic 2 -  Right: 2n-3
+    // private int heuristic2a(){
+    //     return (int) Math.ceil(2* crowdRight() - 3);
+    // }
+
+    // // Heuristic 2 - Left: 2n
+    // private int heuristic2b(){
+    //     return (int) Math.ceil(2* crowdLeft());
+    // }
 
     // // Heuristic 3 Left
     // private int heuristic3a(){
     //     return crowdLeft();
     // }
 
-    // Heuristic 3 Right
-    private int heuristic3b(){
-        return crowdRight();
-    }
+    // // Heuristic 3 Right
+    // private int heuristic3b(){
+    //     return crowdRight();
+    // }
 
 
     private int crowdLeft(){
