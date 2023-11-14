@@ -17,6 +17,8 @@ public class State
 
     private int dimension;
 
+    private int heuristicCost;
+
     private State father = null;
 
 
@@ -84,6 +86,7 @@ public class State
             
 
             this.cost = 0;
+            this.heuristicCost = 0;
             this.dimension = dimension;
             torch = true;
                         
@@ -107,6 +110,7 @@ public class State
             //this.operator[1] = null;
            
             this.cost = 0;
+            this.heuristicCost = 0;
             this.dimension = 5;
                       
             this.rights = new Family[this.dimension];
@@ -128,7 +132,7 @@ public class State
     }
 
     // constructor for creating copy of the state.
-    private State(Family[] fam_r, Family[] fam_l, int cost, State father, List<Family> oper)
+    private State(Family[] fam_r, Family[] fam_l, int cost, State father, List<Family> oper, int heuristicCost)
     {
         this.setRights(fam_r);
         this.setLefts(fam_l);
@@ -148,8 +152,8 @@ public class State
             ArrayList<Integer> costs = new ArrayList<Integer>();
             costs.add(st.heuristic1());
             costs.add(st.heuristic2());
-            costs.add(st.heuristic3());
-            costs.add(st.heuristic4());
+            // costs.add(st.heuristic3());
+            // costs.add(st.heuristic4());
 
             int max = costs.get(0);
             for (Integer k:costs){
@@ -327,13 +331,16 @@ public class State
     public ArrayList<State> getChildren(){
 
         ArrayList<State> children = new ArrayList<>();
-        State child = new State(this.rights, this.lefts, this.cost, this.father, this.operator); //copy constructor
+        State child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //copy constructor
         
         ArrayList<List<Family>> combos = new ArrayList<>();
 
+        //theloume na dhmioyrgei ola ta combos mia fora? h se kathe nea katastash?
+        combos = generateCombinations(child.rights);
+
         if(torch)
         {   
-            combos = generateCombinations(child.rights);
+            
 
             for (List<Family> combination : combos) {
                 // Process the combination
@@ -341,11 +348,13 @@ public class State
                 child.moveLeft(combination);
                 child.operator = combination;
                 children.add(child);
-                child = new State(this.rights, this.lefts, this.cost, this.father, this.operator); //restore the initiail state of the child
+                //edw xrisimopoiw tis eyretikes gia to heuristic cost
+                child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //restore the initiail state of the child
             }
         }
         else
         {
+            //ti sudnyasmous ftiaxneis edw?
             combos = generateCombinations(child.lefts);
             for (List<Family> combination : combos) {
                 // Process the combination
@@ -353,7 +362,7 @@ public class State
                 child.moveRight(combination);
                 child.operator = combination;
                 children.add(child);
-                child = new State(this.rights, this.lefts, this.cost, this.father, this.operator); //restore the initiail state of the child
+                child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //restore the initiail state of the child
             }
         }
 
@@ -382,6 +391,13 @@ public class State
             }
         }
        
+        //================================================  T E S T I N G =================================================//
+        System.out.println("To combination poy dhmiourgithike einai to: ");
+        for (int i = 0; i < combinations.size(); i++) {
+            if (combinations.get(i).size() == 1) System.out.println(combinations.get(i).get(0).getName());
+            if (combinations.get(i).size() == 2) System.out.println(combinations.get(i).get(0).getName() + " mazi me " +combinations.get(i).get(1).getName());
+
+        }
         return combinations;
     }
 
