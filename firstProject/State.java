@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-public class State
+public class State implements Comparable<State>
 {
     private Family[] lefts; 
     private Family[] rights;
@@ -169,12 +169,6 @@ public class State
         }   
         return bestState;
     }
-    
-    //==========================SOS! Isos xreiastei na valoyme epiploen orisma placement gia na kseroume an vriskomaste aristera h deksia=========//
-    
-    //===================PROVLIMA: oi euretikes exoyn diaforetiko "euros" metrisis. oi 2 protes metroun to synoliko kostos mexri na teleivsei o algorithmos.
-    //===================oi alles mono gia to sygkekrimeno state.
-    
         /*  Heuristic 1 - suppose that NOT only 2 people can cross the bridge, 
      also they don't need someone from the left side to come and take them with the torch
      so the cost for everyone on the right side to pass to the left side
@@ -183,7 +177,9 @@ public class State
      private int heuristic1(){
         int max =-1;
         for (Family fam:rights){
-            if (fam.getCrossingTime()>max) max = fam.getCrossingTime();
+            if (fam!=null){
+                if (fam.getCrossingTime()>max) max = fam.getCrossingTime();
+            }
         }
         return max;
     }
@@ -196,46 +192,50 @@ public class State
         int maxR =-1;
         int minL = Integer.MAX_VALUE;
         for (Family fam:rights){
-            if (fam.getCrossingTime()>maxR) maxR = fam.getCrossingTime();
+            if (fam!=null){
+                if (fam.getCrossingTime()>maxR) maxR = fam.getCrossingTime();
+            }
         }
         for (Family fam:lefts){
-            if (fam.getCrossingTime()<minL) minL = fam.getCrossingTime();
+            if (fam!=null){
+                if (fam.getCrossingTime()<minL) minL = fam.getCrossingTime();
+            }
         }
         return minL + maxR;
     }
 
-    /*  Heuristic 3 - If I'm on the left side, i always choose the min value to go back
-    */
-     private int heuristic3(){
-        int min = Integer.MAX_VALUE;
-        for (Family fam:lefts){
-            if (fam.getCrossingTime()<min) min = fam.getCrossingTime();
-        }
-        return min;
-    }
+    // /*  Heuristic 3 - If I'm on the left side, i always choose the min value to go back
+    // */
+    //  private int heuristic3(){
+    //     int min = Integer.MAX_VALUE;
+    //     for (Family fam:lefts){
+    //         if (fam.getCrossingTime()<min) min = fam.getCrossingTime();
+    //     }
+    //     return min;
+    // }
 
-    /*  Heuristic 4 - If I'm on the right side, i always choose the min combination to go to the left
-    */
-     private int heuristic4(){
-        int min1 = Integer.MAX_VALUE;
-        int min2 = Integer.MAX_VALUE;
+    // /*  Heuristic 4 - If I'm on the right side, i always choose the min combination to go to the left
+    // */
+    //  private int heuristic4(){
+    //     int min1 = Integer.MAX_VALUE;
+    //     int min2 = Integer.MAX_VALUE;
 
-        for (Family fam : rights) {
-            int crossingTime = fam.getCrossingTime();
+    //     for (Family fam : rights) {
+    //         int crossingTime = fam.getCrossingTime();
 
-            if (rights.length == 1) {
-            return crossingTime;
-            }
+    //         if (rights.length == 1) {
+    //         return crossingTime;
+    //         }
 
-            if (crossingTime < min1) {
-                min2 = min1;
-                min1 = crossingTime;
-            } else if (crossingTime < min2) {
-                min2 = crossingTime;
-            }
-        }
-        return Math.max(min1, min2); 
-    }
+    //         if (crossingTime < min1) {
+    //             min2 = min1;
+    //             min1 = crossingTime;
+    //         } else if (crossingTime < min2) {
+    //             min2 = crossingTime;
+    //         }
+    //     }
+    //     return Math.max(min1, min2); 
+    // }
 
 
     // // Heuristic 1 - ceil(n/2)
@@ -329,18 +329,18 @@ public class State
     }
     
     public ArrayList<State> getChildren(){
+        System.out.println("Eimai stin GetChildren()");
 
         ArrayList<State> children = new ArrayList<>();
         State child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //copy constructor
         
         ArrayList<List<Family>> combos = new ArrayList<>();
-
-        //theloume na dhmioyrgei ola ta combos mia fora? h se kathe nea katastash?
-        combos = generateCombinations(child.rights);
+        System.out.println(child.crowdRight());
 
         if(torch)
         {   
-            
+            //theloume na dhmioyrgei ola ta combos mia fora? h se kathe nea katastash?
+            combos = generateCombinations(child.rights);
 
             for (List<Family> combination : combos) {
                 // Process the combination
@@ -349,21 +349,36 @@ public class State
                 child.operator = combination;
                 children.add(child);
                 //edw xrisimopoiw tis eyretikes gia to heuristic cost
+                //state = HeuristicManager...
+                //h heuristicCost = ...
                 child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //restore the initiail state of the child
             }
         }
         else
         {
-            //ti sudnyasmous ftiaxneis edw?
             combos = generateCombinations(child.lefts);
+            int min = Integer.MAX_VALUE;
+            List<Family> mincombination = null;
             for (List<Family> combination : combos) {
-                // Process the combination
+                if (combination.size() ==1){
+                    if (combination.get(0).getCrossingTime() <min){
+                        mincombination  = combination; 
+                    }
+                }
+            }
+
+            // // to combos tha pairnei ta lefts   
+            // combos = generateCombinations(child.lefts);
+            // for (List<Family> combination : combos) {
+            //     // Process the combination
+
+                System.out.println("To mikrotero comb: " + mincombination.get(0).getName());
                 child.father = this;
-                child.moveRight(combination);
-                child.operator = combination;
+                child.moveRight(mincombination);
+                child.operator = mincombination;
                 children.add(child);
                 child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //restore the initiail state of the child
-            }
+            // }
         }
 
         return children;
@@ -598,6 +613,12 @@ public class State
     
     sb.append("\n==============================================================================================================\n\n\n");
     return sb.toString();
+    }
+
+    @Override
+    public int compareTo(State o) {
+        // Compare based on heuristicCost in ascending order
+        return Integer.compare(this.heuristicCost, o.heuristicCost);
     }
 
 

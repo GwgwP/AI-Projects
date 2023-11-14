@@ -1,10 +1,13 @@
+// import java.awt.Taskbar.State;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
  public class AstarAlgorithm
 {
-    private ArrayList<State> frontier;
+    private List<State> frontier;
     private HashSet<State> closedSet;
     
     AstarAlgorithm()
@@ -33,6 +36,11 @@ import java.util.HashSet;
         if(initialState.isFinal()) return initialState;
         // step 1: put initial state in the frontier.
         this.frontier.add(initialState);
+
+        System.out.println("To arxiko state pou pairnw: " );
+        System.out.println(frontier.get(0));
+        System.out.println();
+
         // step 2: check for empty frontier.
         while(this.frontier.size() > 0)
         {
@@ -48,10 +56,20 @@ import java.util.HashSet;
                 this.closedSet.add(currentState);
                 ArrayList<State> children = new ArrayList<>();
                 children = currentState.getChildren();
-                State best = currentState.HeuristicManager(children);
-                this.frontier.add(best);
+
+                // System.out.println("Paidia ston Astar: ");
+                // for (State member : children) {
+                //     System.out.println(member + ",");
+                // }
+                State bestState = currentState.HeuristicManager(children);
+
+                System.out.println(bestState);
+                this.frontier.add(bestState);
+                System.out.println(frontier.size());
+
                 // step 6: sort the frontier based on the heuristic score to get best as first
-                Collections.sort(this.frontier); // sort the frontier to get best as first
+                
+                Collections.sort(frontier); // sort the frontier to get best as first
             }
         }
         return null;
