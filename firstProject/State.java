@@ -136,13 +136,18 @@ public class State implements Comparable<State>
         this.cost=cost;
         this.father = father;
         this.operator = oper;
+        this.heuristicCost = heuristicCost;
     }
 
-    //Returns the best of the heuristic functions.
+    /**
+     * @param children
+     * @return  the best of the heuristic functions.
+     */ 
     public State HeuristicManager(ArrayList<State> children){
 
         State bestState=null;
-        int min=Integer.MAX_VALUE;
+
+        int min = Integer.MAX_VALUE;
         int f = Integer.MAX_VALUE;
        
         
@@ -173,8 +178,8 @@ public class State implements Comparable<State>
             
 
             st.heuristicCost = max;
-           
             f =  st.cost + max;
+
             if (f<min){
                 min  = f;
                 bestState = st;
@@ -182,10 +187,14 @@ public class State implements Comparable<State>
         }   
         return bestState;
     }
-        /*  Heuristic 1 - suppose that NOT only 2 people can cross the bridge, 
-     also they don't need someone from the left side to come and take them with the torch
-     so the cost for everyone on the right side to pass to the left side
-     is the max value of the rights.
+
+
+    /**
+     * Heuristic 1 - suppose that NOT only 2 people can cross the bridge,
+     * also they don't need someone from the left side to come and take them with the torch
+     * so the cost for everyone on the right side to pass to the left side
+     * is the max value of the rights.
+     * @return max
     */
      private int heuristic1(){
         int max =-1;
