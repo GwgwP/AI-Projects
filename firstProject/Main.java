@@ -7,7 +7,7 @@ public class Main
     {
 
         State initState = new State(5, false); // Create a State instance (the one given)
-       // State initState = new State(500, true); // Create a State instance (a random one)
+        //State initState = new State(500, true); // Create a State instance (a random one)
        
         AstarAlgorithm astar = new AstarAlgorithm();
         
