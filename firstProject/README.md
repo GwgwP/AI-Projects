@@ -9,7 +9,8 @@
 ## Class State 
 <details>
   <summary> click to expand</summary>
-The `State` class is a representation of each state in the problem, embodying various attributes and methods to manage state transitions. Here's a breakdown of its components:
+
+The `State` class is a representation of each state in the problem, embodying various attributes and methods to manage state transitions. Here's a breakdown:
 
 ## Attributes
 
@@ -207,6 +208,7 @@ for comparing which state is better we look at the min heuristic cost (used from
 ## class Family
 <details>
   <summary> click to expand</summary>
+
 The `Family` class is a Java class that represents a family member of the problem.
 It encapsulates the properties and behaviors of a family member, ensuring that each family has a unique identifier and can be represented as a string.
 
