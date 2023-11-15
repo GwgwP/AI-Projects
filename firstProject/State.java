@@ -146,22 +146,47 @@ public class State implements Comparable<State>
 
         State bestState=null;
         int min=Integer.MAX_VALUE;
-
+        int f = Integer.MAX_VALUE;
+       
+        
         for (State st : children){
+            // System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
+            // System.out.println("THE STATE I AM IN IS: ");
+            // System.out.println(st);
+            // System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
+            int res1 = 0;
+            int res2 = 0;
 
             ArrayList<Integer> costs = new ArrayList<Integer>();
-            costs.add(st.heuristic1());
-            costs.add(st.heuristic2());
+            
+            if (torch) { //right -> left
+                res1 = st.heuristic1();
+            }
+            else{ //left -> right
+                res2 = st.heuristic2();
+            }
+            costs.add(res1);
+            costs.add(res2);
+      
             // costs.add(st.heuristic3());
             // costs.add(st.heuristic4());
+            
 
             int max = costs.get(0);
+            
+            
+
             for (Integer k:costs){
                 if (k>max) max=k;
             }
-            int g = st.father.cost;
+            //System.out.println("MAX: "+max);
+
+            st.heuristicCost = max;
+            //System.out.println("COSTOS: "+st.cost);
+            //int g = st.cost ;//+ st.cost;
             //
-            int f =  g + max;
+            f =  st.cost + max;
+            //System.out.println("------F:-------"+ f);
             if (f<min){
                 min  = f;
                 bestState = st;
@@ -181,6 +206,7 @@ public class State implements Comparable<State>
                 if (fam.getCrossingTime()>max) max = fam.getCrossingTime();
             }
         }
+      //  System.out.println("HER1: "+ max); //29
         return max;
     }
 
@@ -188,19 +214,23 @@ public class State implements Comparable<State>
      but they need someone from the left side to come and take them with the torch.
      I choose min from the left side, max from the right side, so that i don't overestimate.
     */
-     private int heuristic2(){
+    private int heuristic2(){
         int maxR =-1;
         int minL = Integer.MAX_VALUE;
         for (Family fam:rights){
             if (fam!=null){
+               // System.out.println("MPIKA1 mem: "+fam.getName());
                 if (fam.getCrossingTime()>maxR) maxR = fam.getCrossingTime();
             }
         }
         for (Family fam:lefts){
             if (fam!=null){
+               // System.out.println("mpika2");
                 if (fam.getCrossingTime()<minL) minL = fam.getCrossingTime();
             }
         }
+       // System.out.println("HER2: MAXR: "+maxR+" MINL: "+minL); //30
+
         return minL + maxR;
     }
 
@@ -329,13 +359,13 @@ public class State implements Comparable<State>
     }
     
     public ArrayList<State> getChildren(){
-        System.out.println("Eimai stin GetChildren()");
+        //System.out.println("Eimai stin GetChildren()");
 
         ArrayList<State> children = new ArrayList<>();
         State child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //copy constructor
         
         ArrayList<List<Family>> combos = new ArrayList<>();
-        System.out.println(child.crowdRight());
+        //System.out.println(child.crowdRight());
 
         if(torch)
         {   
@@ -343,42 +373,40 @@ public class State implements Comparable<State>
             combos = generateCombinations(child.rights);
 
             for (List<Family> combination : combos) {
-                // Process the combination
-                child.father = this;
-                child.moveLeft(combination);
-                child.operator = combination;
-                children.add(child);
-                //edw xrisimopoiw tis eyretikes gia to heuristic cost
-                //state = HeuristicManager...
-                //h heuristicCost = ...
-                child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //restore the initiail state of the child
+                if(combination.size()==2) //when we are on the right side we want 2 people to move left
+                {
+                    // Process the combination
+                    child.father = this;
+                    child.moveLeft(combination);
+                    child.operator = combination;
+                    children.add(child);
+                    //edw xrisimopoiw tis eyretikes gia to heuristic cost
+                    //state = HeuristicManager...
+                    //h heuristicCost = ...
+                    child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //restore the initiail state of the child
+                }
             }
         }
         else
-        {
+        {   //when we are on the left side we want one person to move right
             combos = generateCombinations(child.lefts);
-            int min = Integer.MAX_VALUE;
-            List<Family> mincombination = null;
+            //int min = Integer.MAX_VALUE;
+            //List<Family> mincombination = null;
             for (List<Family> combination : combos) {
                 if (combination.size() ==1){
-                    if (combination.get(0).getCrossingTime() <min){
-                        mincombination  = combination; 
-                    }
+                    // if (combination.get(0).getCrossingTime() <min){
+                    //     mincombination  = combination; 
+                    // }
+                    child.father = this;
+                    child.moveRight(combination);
+                    child.operator = combination;
+                    children.add(child);
+                    child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //restore the initiail state of the child
                 }
+                
             }
-
-            // // to combos tha pairnei ta lefts   
-            // combos = generateCombinations(child.lefts);
-            // for (List<Family> combination : combos) {
-            //     // Process the combination
-
-                System.out.println("To mikrotero comb: " + mincombination.get(0).getName());
-                child.father = this;
-                child.moveRight(mincombination);
-                child.operator = mincombination;
-                children.add(child);
-                child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //restore the initiail state of the child
-            // }
+            
+        
         }
 
         return children;
@@ -407,12 +435,12 @@ public class State implements Comparable<State>
         }
        
         //================================================  T E S T I N G =================================================//
-        System.out.println("To combination poy dhmiourgithike einai to: ");
-        for (int i = 0; i < combinations.size(); i++) {
-            if (combinations.get(i).size() == 1) System.out.println(combinations.get(i).get(0).getName());
-            if (combinations.get(i).size() == 2) System.out.println(combinations.get(i).get(0).getName() + " mazi me " +combinations.get(i).get(1).getName());
+        // System.out.println("To combination poy dhmiourgithike einai to: ");
+        // for (int i = 0; i < combinations.size(); i++) {
+        //     if (combinations.get(i).size() == 1) System.out.println(combinations.get(i).get(0).getName());
+        //     if (combinations.get(i).size() == 2) System.out.println(combinations.get(i).get(0).getName() + " mazi me " +combinations.get(i).get(1).getName());
 
-        }
+        // }
         return combinations;
     }
 
@@ -612,6 +640,7 @@ public class State implements Comparable<State>
     sb.append("\n"); // Add extra space for formatting
     
     sb.append("\n==============================================================================================================\n\n\n");
+    sb.append("heuristic cost: "+ this.heuristicCost+"\n");
     return sb.toString();
     }
 

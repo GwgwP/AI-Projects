@@ -37,13 +37,15 @@ import java.util.List;
         // step 1: put initial state in the frontier.
         this.frontier.add(initialState);
 
-        System.out.println("To arxiko state pou pairnw: " );
+        //System.out.println("To arxiko state pou pairnw: " );
         System.out.println(frontier.get(0));
         System.out.println();
 
+        int count = 0;
         // step 2: check for empty frontier.
-        while(this.frontier.size() > 0)
+        while(this.frontier.size() > 0 && count <=500)
         {
+            count++;
             // step 3: get the first node out of the frontier.
             State currentState = this.frontier.remove(0);
             // step 4: if final state, return.
