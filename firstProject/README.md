@@ -1,5 +1,10 @@
 # AI-Projects - first project : Family at a bridge
+# how to employ the code:
+`Main.java` -> run java. 
+(Automatically the code is set to a fixed example. If you wish to check different instances, comment out line 9, comment in line 10 and insert as the first parameter (200) how many randomized family members you wish to have.)
 
+-----------
+# Code explanation
 
 # Class State 
 
