@@ -16,20 +16,6 @@ import java.util.List;
         this.closedSet = new HashSet<>();
     }
 
-    // periorismoi
-    /***
-     * 1) max 2 atoma
-     * 2) xronos toy megalyterou
-     * 3) metakinisi me fako (ar-deksia)
-     * 
-     *  idees
-     * 
-     * 3) syndyasasmoi ceiling (n / 2 ) 
-     * 3) posoi einai aristera & posoi einai deksia  
-     * 4) an eisai aristera 2n
-     * 5) an eisai deskia 2n-3
-     * 
-     */
 
     State Astar(State initialState)
     {
@@ -37,7 +23,6 @@ import java.util.List;
         // step 1: put initial state in the frontier.
         this.frontier.add(initialState);
 
-        //System.out.println("To arxiko state pou pairnw: " );
         System.out.println(frontier.get(0));
         System.out.println();
 
@@ -59,10 +44,6 @@ import java.util.List;
                 ArrayList<State> children = new ArrayList<>();
                 children = currentState.getChildren();
 
-                // System.out.println("Paidia ston Astar: ");
-                // for (State member : children) {
-                //     System.out.println(member + ",");
-                // }
                 State bestState = currentState.HeuristicManager(children);
 
                 System.out.println(bestState);
@@ -70,12 +51,9 @@ import java.util.List;
                 System.out.println(frontier.size());
 
                 // step 6: sort the frontier based on the heuristic score to get best as first
-                
                 Collections.sort(frontier); // sort the frontier to get best as first
             }
         }
         return null;
     }
-
-
 }

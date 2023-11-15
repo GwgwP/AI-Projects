@@ -106,9 +106,6 @@ public class State implements Comparable<State>
             //the example at the project
           
             this.torch = true;
-            //this.operator[0] = null;
-            //this.operator[1] = null;
-           
             this.cost = 0;
             this.heuristicCost = 0;
             this.dimension = 5;
@@ -150,10 +147,6 @@ public class State implements Comparable<State>
        
         
         for (State st : children){
-            // System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
-            // System.out.println("THE STATE I AM IN IS: ");
-            // System.out.println(st);
-            // System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
             int res1 = 0;
             int res2 = 0;
 
@@ -168,8 +161,6 @@ public class State implements Comparable<State>
             costs.add(res1);
             costs.add(res2);
       
-            // costs.add(st.heuristic3());
-            // costs.add(st.heuristic4());
             
 
             int max = costs.get(0);
@@ -179,14 +170,11 @@ public class State implements Comparable<State>
             for (Integer k:costs){
                 if (k>max) max=k;
             }
-            //System.out.println("MAX: "+max);
+            
 
             st.heuristicCost = max;
-            //System.out.println("COSTOS: "+st.cost);
-            //int g = st.cost ;//+ st.cost;
-            //
+           
             f =  st.cost + max;
-            //System.out.println("------F:-------"+ f);
             if (f<min){
                 min  = f;
                 bestState = st;
@@ -206,7 +194,6 @@ public class State implements Comparable<State>
                 if (fam.getCrossingTime()>max) max = fam.getCrossingTime();
             }
         }
-      //  System.out.println("HER1: "+ max); //29
         return max;
     }
 
@@ -219,93 +206,15 @@ public class State implements Comparable<State>
         int minL = Integer.MAX_VALUE;
         for (Family fam:rights){
             if (fam!=null){
-               // System.out.println("MPIKA1 mem: "+fam.getName());
                 if (fam.getCrossingTime()>maxR) maxR = fam.getCrossingTime();
             }
         }
         for (Family fam:lefts){
             if (fam!=null){
-               // System.out.println("mpika2");
                 if (fam.getCrossingTime()<minL) minL = fam.getCrossingTime();
             }
         }
-       // System.out.println("HER2: MAXR: "+maxR+" MINL: "+minL); //30
-
         return minL + maxR;
-    }
-
-    // /*  Heuristic 3 - If I'm on the left side, i always choose the min value to go back
-    // */
-    //  private int heuristic3(){
-    //     int min = Integer.MAX_VALUE;
-    //     for (Family fam:lefts){
-    //         if (fam.getCrossingTime()<min) min = fam.getCrossingTime();
-    //     }
-    //     return min;
-    // }
-
-    // /*  Heuristic 4 - If I'm on the right side, i always choose the min combination to go to the left
-    // */
-    //  private int heuristic4(){
-    //     int min1 = Integer.MAX_VALUE;
-    //     int min2 = Integer.MAX_VALUE;
-
-    //     for (Family fam : rights) {
-    //         int crossingTime = fam.getCrossingTime();
-
-    //         if (rights.length == 1) {
-    //         return crossingTime;
-    //         }
-
-    //         if (crossingTime < min1) {
-    //             min2 = min1;
-    //             min1 = crossingTime;
-    //         } else if (crossingTime < min2) {
-    //             min2 = crossingTime;
-    //         }
-    //     }
-    //     return Math.max(min1, min2); 
-    // }
-
-
-    // // Heuristic 1 - ceil(n/2)
-    // private int heuristic1(){
-    //     return (int) Math.ceil(crowdRight()/2);
-    // }
-    // // Heuristic 2 -  Right: 2n-3
-    // private int heuristic2a(){
-    //     return (int) Math.ceil(2* crowdRight() - 3);
-    // }
-
-    // // Heuristic 2 - Left: 2n
-    // private int heuristic2b(){
-    //     return (int) Math.ceil(2* crowdLeft());
-    // }
-
-    // // Heuristic 3 Left
-    // private int heuristic3a(){
-    //     return crowdLeft();
-    // }
-
-    // // Heuristic 3 Right
-    // private int heuristic3b(){
-    //     return crowdRight();
-    // }
-
-
-    private int crowdLeft(){
-        int sum=0;
-        for (Family fam:lefts){
-            if (fam!=null) sum++;
-        }
-        return sum;
-    }
-    private int crowdRight(){
-        int sum=0;
-        for (Family fam:rights){
-            if (fam!=null) sum++;
-        }
-        return sum;
     }
 
 
@@ -337,7 +246,6 @@ public class State implements Comparable<State>
         return rights;
     }
 
-    //TODO CHECK IF NEEDED
     int getDimension() 
 	{
         return this.dimension;
@@ -352,27 +260,17 @@ public class State implements Comparable<State>
 	{
         return this.father;
     }
-
-    private void setFather(State father)
-	{
-        this.father = father;
-    }
-    
+   
     public ArrayList<State> getChildren(){
-        //System.out.println("Eimai stin GetChildren()");
-
         ArrayList<State> children = new ArrayList<>();
         State child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //copy constructor
         
         ArrayList<List<Family>> combos = new ArrayList<>();
-        //System.out.println(child.crowdRight());
-
         if(torch)
         {   
-            //theloume na dhmioyrgei ola ta combos mia fora? h se kathe nea katastash?
             combos = generateCombinations(child.rights);
-
-            for (List<Family> combination : combos) {
+            for (List<Family> combination : combos) 
+            {
                 if(combination.size()==2) //when we are on the right side we want 2 people to move left
                 {
                     // Process the combination
@@ -380,39 +278,27 @@ public class State implements Comparable<State>
                     child.moveLeft(combination);
                     child.operator = combination;
                     children.add(child);
-                    //edw xrisimopoiw tis eyretikes gia to heuristic cost
-                    //state = HeuristicManager...
-                    //h heuristicCost = ...
                     child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //restore the initiail state of the child
                 }
             }
         }
         else
-        {   //when we are on the left side we want one person to move right
+        {   
             combos = generateCombinations(child.lefts);
-            //int min = Integer.MAX_VALUE;
-            //List<Family> mincombination = null;
             for (List<Family> combination : combos) {
-                if (combination.size() ==1){
-                    // if (combination.get(0).getCrossingTime() <min){
-                    //     mincombination  = combination; 
-                    // }
+                if (combination.size() == 1) { //when we are on the left side we want one person to move right
                     child.father = this;
                     child.moveRight(combination);
                     child.operator = combination;
                     children.add(child);
                     child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //restore the initiail state of the child
                 }
-                
-            }
-            
-        
+            }   
         }
-
         return children;
     }
 
-    // Generating every possible combination of the family members. (Ex {Father, son}, {son, mother} etc)
+    // Generating every possible combination of the family members. (Ex {Father, son}, {son, mother} , {son} etc)
     private ArrayList<List<Family>> generateCombinations(Family[] sourceSide) {
         ArrayList<List<Family>> combinations = new ArrayList<>();
         int n = sourceSide.length;
@@ -434,13 +320,6 @@ public class State implements Comparable<State>
             }
         }
        
-        //================================================  T E S T I N G =================================================//
-        // System.out.println("To combination poy dhmiourgithike einai to: ");
-        // for (int i = 0; i < combinations.size(); i++) {
-        //     if (combinations.get(i).size() == 1) System.out.println(combinations.get(i).get(0).getName());
-        //     if (combinations.get(i).size() == 2) System.out.println(combinations.get(i).get(0).getName() + " mazi me " +combinations.get(i).get(1).getName());
-
-        // }
         return combinations;
     }
 
