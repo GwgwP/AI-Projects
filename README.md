@@ -6,7 +6,8 @@ Each state has:
 - 2 arrays: 
     - <b>rights</b> : represents which Family members are standing at the right side of the bridge
     - <b>lefts</b> : represents which Family members are standing at the left side of the bridge.
-- operator: List that keeps track of which family members moved from the one side of the bridge to the other.
+- operator: 
+    - List that keeps track of which family members moved from the one side of the bridge to the other.
 - torch
     - a boolean variable that represents where is the torch at this moment. (True means rigth & false left)
 - dimension
@@ -56,11 +57,15 @@ We create a new copy of the current state (so the changes will take place in thi
 - if the torch is left, same logic but this time we choose the combinations that have only 1 person moving. 
 
 ### moveLeft
-We can have 1 or 2 members moving, that's why member2 is initialized to null. 
+We consider always only 2 members moving right to left. 
 When we are moving left we need to find which to people from the src side (right) want to move. Then we are trying to find an empty spot at the left side to move the family members.
 Then, the family members have been moved so we swap the torch.
 ### moveRight
-Same logic NEEDS CHECK
+In this method, we can have only 1 member returning to the sourse (right) side and it uses the same logic with moveLeft.
+#### Fact:
+        we don't face any propblem or exception in moveRight & Left with the amount of people moving each time because:
+        moveLetf is called by getChildren if the torch is true so that's why we always have 2 people moving
+        moveRight is called by getChildren if the torch is false, that's why we always have 1 person moving.
 
 ### isFinal
 If everyone is at the right side, we have a final state.

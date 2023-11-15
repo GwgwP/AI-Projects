@@ -46,9 +46,9 @@ import java.util.List;
 
                 State bestState = currentState.HeuristicManager(children);
 
-                System.out.println(bestState);
+                //System.out.println(bestState);
                 this.frontier.add(bestState);
-                System.out.println(frontier.size());
+                //System.out.println(frontier.size());
 
                 // step 6: sort the frontier based on the heuristic score to get best as first
                 Collections.sort(frontier); // sort the frontier to get best as first

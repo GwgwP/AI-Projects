@@ -163,3 +163,68 @@
         }
         this.increaseCost(Math.max(a, b));
     }
+
+    void moveLeft(List<Family> members_to_move) {  
+        
+        // Move at most 2 family members from the right side to the left side.
+    
+        Family member1 = members_to_move.get(0);
+        Family member2 = (members_to_move.size() == 2) ? members_to_move.get(1) : null;
+    
+        // Find the indexes of the members to move from the Family array
+        int k = findFamilyIndex(member1, rights);
+        int l = (member2 != null) ? findFamilyIndex(member2, rights) : -1;
+    
+        // Find an empty spot on the left side to move family member1
+        int j = findEmptySpot(lefts); //we are sure that there will be an empty spot because we have 2 arrays of the same dimension
+        lefts[j] = rights[k];
+        rights[k] = null;  // Remove family member who moved left
+    
+    
+        // Find an empty spot on the left side to move family member2 if it exists
+        if (member2 != null) {
+            j = findEmptySpot(lefts);
+            lefts[j] = rights[l];
+            rights[l] = null;  // Remove family member who moved left
+        }
+    
+        torch = false;  // Move the torch to the left side
+    
+        int a = member1.getCrossingTime();
+        int b = (member2 != null) ? member2.getCrossingTime() : 0;
+    
+        this.increaseCost(Math.max(a, b));
+    }
+
+    void moveRight(List<Family> members_to_move) {        
+        
+        // Move at most 2 family members from the right side to the left side.
+    
+        Family member1 = members_to_move.get(0);
+        Family member2 = (members_to_move.size() == 2) ? members_to_move.get(1) : null;
+    
+        // Find the indices of the members to move from the Family array
+        int k = findFamilyIndex(member1, lefts);
+        int l = (member2 != null) ? findFamilyIndex(member2, lefts) : -1;
+    
+        // Find an empty spot on the right side to move family member1
+        int j = findEmptySpot(rights);
+    
+        rights[j] = lefts[k];
+        lefts[k] = null;  // Remove family member who moved right
+
+        // Find an empty spot on the right side to move family member2 if it exists
+        if (member2 != null) {
+            j = findEmptySpot(rights);
+            rights[j] = lefts[l];
+            lefts[l] = null;  // Remove family member who moved left
+
+        }
+    
+        torch = true;  // Move the torch to the left side
+    
+        int a = member1.getCrossingTime();
+        int b = (member2 != null) ? member2.getCrossingTime() : 0;
+    
+        this.increaseCost(Math.max(a, b));
+    }
