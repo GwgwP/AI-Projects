@@ -6,8 +6,9 @@
 -----------
 # Code explanation
 
-# Class State 
-
+## Class State 
+<details>
+  <summary> click to expand</summary>
 The `State` class is a representation of each state in the problem, embodying various attributes and methods to manage state transitions. Here's a breakdown of its components:
 
 ## Attributes
@@ -34,7 +35,7 @@ The `State` class is a representation of each state in the problem, embodying va
 - **father**:
   - References the State (node) that led to the current state.
 
-## State Class Functionality
+## Functionality
 
 - **Initialization**:
   - Creates an instance of the `State` class with arrays for both sides of the bridge, torch location, dimension, and heuristic cost.
@@ -201,9 +202,11 @@ How we print every state.
 
 ## compareTo
 for comparing which state is better we look at the min heuristic cost (used from the Astar when doing the sorting).
+</details>
 
-
-# class Family
+## class Family
+<details>
+  <summary> click to expand</summary>
 The `Family` class is a Java class that represents a family member of the problem.
 It encapsulates the properties and behaviors of a family member, ensuring that each family has a unique identifier and can be represented as a string.
 
@@ -233,8 +236,11 @@ Calls the generateUniqueId method to assign a unique ID to the family.
 
 - getId: Returns the unique ID of the family.
 - toString: Overrides the toString method to provide a string representation of the family (returns the family name).
+</details>
 
-# Class Main  
+## Class Main
+<details>
+  <summary> click to expand</summary>  
 
 The `Main` class in Java serves as the entry point for the program. Here is a brief summary of its functionality:
 
@@ -255,8 +261,11 @@ The `Main` class in Java serves as the entry point for the program. Here is a br
 - The class utilizes the A* algorithm (`AstarAlgorithm`) and works with instances of the `State` class to find a solution path and measure the search time.
 - The initial state can be either a predefined one (`new State(5, false)`) or a randomly generated state (`new State(500, true)`).
 - The solution path is printed in reverse order from the goal state to the initial state.
+</details>
 
-# Class AstarAlgorithm  
+## Class AstarAlgorithm  
+<details>
+  <summary> click to expand</summary>
 
 The `AstarAlgorithm` class in Java implements the A* algorithm for searching and finding a solution path.
 
@@ -302,3 +311,4 @@ The `AstarAlgorithm` class includes:
   - If the frontier becomes empty or the iteration limit is reached, returns `null` indicating no solution.
 
 This class manages the A* algorithm's exploration process, maintaining a frontier of states and a closed set to avoid redundant exploration. The heuristic-based selection of states guides the search toward an optimal solution.
+</details>
