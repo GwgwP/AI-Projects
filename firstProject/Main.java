@@ -7,7 +7,7 @@ public class Main
     {
 
         State initState = new State(5, false); // Create a State instance (the one given)
-        //State initState = new State(10, true); // Create a State instance (a random one)
+        //State initState = new State(200, true); // Create a State instance (a random one)
        
         AstarAlgorithm astar = new AstarAlgorithm();
         
@@ -31,7 +31,7 @@ public class Main
             Collections.reverse(path);
             for(State st: path)
             {
-                System.out.println(st);;
+                System.out.println(st);
             }
             System.out.println();
             System.out.println("Search time: " + (double)(end - start) / 1000 + " sec.");  // total time of searching in seconds.

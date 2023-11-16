@@ -24,7 +24,7 @@ public class State implements Comparable<State>
     /**
      * State's Constructor
      * @param dimension (number of family members - taken only if randomized is set)
-     * @param randomized
+     * @param randomized boolean
      */
     State(int dimension, boolean randomized)
     {
@@ -62,7 +62,7 @@ public class State implements Comparable<State>
             // Create an array to store family members and their crossing times
             Family[] family = new Family[dimension];
             
-            if(dimension <=10 ) //we dont have duplicates (ex 2 fathers)
+            if(dimension <=10 ) //we don't have duplicates (ex 2 fathers)
             {
                 // Generate random family members with names and crossing times
                 for (int i = 0; i < dimension; i++) 
@@ -135,12 +135,12 @@ public class State implements Comparable<State>
 
     /**
      *  constructor for creating copy of the state.
-     * @param fam_r
-     * @param fam_l
-     * @param cost
-     * @param father
-     * @param oper
-     * @param heuristicCost
+     * @param fam_r rights
+     * @param fam_l lefts
+     * @param cost cost
+     * @param father father
+     * @param oper operator
+     * @param heuristicCost heuristic cost
      */
     private State(Family[] fam_r, Family[] fam_l, int cost, State father, List<Family> oper, int heuristicCost)
     {
@@ -153,22 +153,23 @@ public class State implements Comparable<State>
     }
 
     /**
-     * @param children
-     * @return  the best of the heuristic functions.
+     * this method evaluates the children of a state based on the heuristic functions
+     * @param children of a state
+     * @return  the best state.
      */ 
     public State HeuristicManager(ArrayList<State> children){
 
         State bestState=null;
 
         int min = Integer.MAX_VALUE;
-        int f = Integer.MAX_VALUE;
+        int f ;
        
         
         for (State st : children){
             int res1 = 0;
             int res2 = 0;
 
-            ArrayList<Integer> costs = new ArrayList<Integer>();
+            ArrayList<Integer> costs = new ArrayList<>();
             
             if (torch) { //right -> left
                 res1 = st.heuristic1();
@@ -254,13 +255,7 @@ public class State implements Comparable<State>
         System.arraycopy(lefts, 0, this.lefts, 0, this.dimension);
     }
 
-    /**
-     *
-     * @return lefts[] array
-     */
-    public Family[] getLefts() {
-        return lefts;
-    }
+
 
     /**
      *
@@ -270,37 +265,11 @@ public class State implements Comparable<State>
         this.dimension = rights.length;
         this.rights = new Family[this.dimension];
 
-        for(int i = 0; i < this.dimension; i++)
-        {
-            this.rights[i]= rights[i];
-        }
+        System.arraycopy(rights, 0, this.rights, 0, this.dimension);
     }
 
-    /**
-     *
-     * @return rights[] array
-     */
-    public Family[] getRights() {
-        return rights;
-    }
 
-    /**
-     *
-     * @return dimension
-     */
-    public int getDimension()
-	{
-        return this.dimension;
-    }
 
-    /**
-     *
-     * @param dimension number of family members
-     */
-    void setDimension(int dimension) 
-	{
-        this.dimension = dimension;
-    }
 
     /**
      *
@@ -319,7 +288,7 @@ public class State implements Comparable<State>
         ArrayList<State> children = new ArrayList<>();
         State child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //copy constructor
         
-        ArrayList<List<Family>> combos = new ArrayList<>();
+        ArrayList<List<Family>> combos ;
         if(torch)
         {   
             combos = generateCombinations(child.rights);
@@ -332,7 +301,7 @@ public class State implements Comparable<State>
                     child.moveLeft(combination);
                     child.operator = combination;
                     children.add(child);
-                    child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //restore the initiail state of the child
+                    child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //restore the initial state of the child
                 }
             }
         }
@@ -345,7 +314,7 @@ public class State implements Comparable<State>
                     child.moveRight(combination);
                     child.operator = combination;
                     children.add(child);
-                    child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //restore the initiail state of the child
+                    child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //restore the initial state of the child
                 }
             }   
         }
@@ -353,7 +322,7 @@ public class State implements Comparable<State>
     }
 
     /**
-     * Generating every possible combination of the family members. (Ex {Father, son}, {son, mother} , {son} etc)
+     * Generating every possible combination of the family members. (Ex {Father, son}, {son, mother} , {son} etc.)
      * @param sourceSide lefts[] or right[] array
      * @return all combinations
      */
@@ -467,22 +436,9 @@ public class State implements Comparable<State>
     }
 
 
-    /**
-     *
-     * @return operator that led to the current state
-     */
-    public List<Family> getOperator() {
-        return operator;
-    }
 
 
-    /**
-     *
-     * @return the cost
-     */
-    public int getCost() {
-        return cost;
-    }
+
 
     /**
      *

@@ -7,9 +7,12 @@ import java.util.List;
 
  public class AstarAlgorithm
 {
-    private List<State> frontier;
-    private HashSet<State> closedSet;
-    
+    private final List<State> frontier;
+    private final HashSet<State> closedSet;
+
+    /**
+     * A* 's constructor
+     */
     AstarAlgorithm()
     {
         this.frontier = new ArrayList<>();
@@ -17,6 +20,11 @@ import java.util.List;
     }
 
 
+    /**
+     *
+     * @param initialState the root of the tree
+     * @return the final state (if the algorithm has found one) or null if the algorithm couldn't respond.
+     */
     State Astar(State initialState)
     {
         if(initialState.isFinal()) return initialState;
@@ -38,7 +46,7 @@ import java.util.List;
             if(!this.closedSet.contains(currentState))
             {
                 this.closedSet.add(currentState);
-                ArrayList<State> children = new ArrayList<>();
+                ArrayList<State> children ;
                 children = currentState.getChildren();
 
                 State bestState = currentState.HeuristicManager(children);

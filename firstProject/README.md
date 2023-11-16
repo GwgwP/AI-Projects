@@ -16,20 +16,17 @@ The `State` class is a representation of each state in the problem, embodying va
 
 - **rights**:
   - An array representing Family members standing on the right side of the bridge.
-
 - **lefts**:
   - An array representing Family members standing on the left side of the bridge.
-
-- **operator**:
-  - A list that tracks which family members moved from one side of the bridge to the other.
-
+- **cost**:
+    - the actual (real) cost from the root until this state.
 - **torch**:
   - A boolean variable indicating the torch's location (True for right, False for left).
-
+- **operator**:
+    - A list that tracks which family members moved from one side of the bridge to the other.
 - **dimension**:
   - Represents the total number of people at the beginning of the problem (user's input).
   - The dimensions of `lefts` and `rights` arrays are the same as the `dimension` variable.
-
 - **heuristicCost**:
   - Reflects the heuristic cost of the state, representing the cost from the current node to the final state.
 
@@ -44,6 +41,7 @@ The `State` class is a representation of each state in the problem, embodying va
 - **Attributes Overview**:
   - `rights` and `lefts` represent the current configuration of Family members on each side of the bridge.
   - `operator` keeps track of the movement of Family members.
+  - `cost` the real cost.
   - `torch` signifies the current torch location.
   - `dimension` captures the initial number of people in the problem.
   - `heuristicCost` stores the cost estimation from the current state to the final state.
@@ -175,7 +173,7 @@ The `moveLeft` method is designed to move two family members from the right side
 The `moveRight` method is analogous to `moveLeft` but is designed for a single member to return from the left side to the right side. It follows the same logic and is called when the torch is on the left side during the child state generation process in `getChildren`.
 
 ## isFinal
-If everyone is at the right side, we have a final state.
+If everyone is on the right side, we have a final state.
 
 ## equals
 
