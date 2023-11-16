@@ -7,7 +7,7 @@ public class Main
     {
 
         State initState = new State(5, false); // Create a State instance (the one given)
-        //State initState = new State(200, true); // Create a State instance (a random one)
+        //State initState = new State(10, true); // Create a State instance (a random one)
        
         AstarAlgorithm astar = new AstarAlgorithm();
         
@@ -18,7 +18,7 @@ public class Main
         if(terminalState == null) System.out.println("Could not find a solution.");
         else
         {
-			// print the path from beggining to start.
+			// print the path from beginning to start.
             State temp = terminalState; // begin from the end.
             ArrayList<State> path = new ArrayList<>();
 			path.add(terminalState);

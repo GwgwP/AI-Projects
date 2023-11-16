@@ -23,12 +23,9 @@ import java.util.List;
         // step 1: put initial state in the frontier.
         this.frontier.add(initialState);
 
-        System.out.println(frontier.get(0));
-        System.out.println();
-
         int count = 0;
         // step 2: check for empty frontier.
-        while(this.frontier.size() > 0 && count <=500)
+        while(!this.frontier.isEmpty() && count <=500)
         {
             count++;
             // step 3: get the first node out of the frontier.
@@ -46,9 +43,7 @@ import java.util.List;
 
                 State bestState = currentState.HeuristicManager(children);
 
-                //System.out.println(bestState);
                 this.frontier.add(bestState);
-                //System.out.println(frontier.size());
 
                 // step 6: sort the frontier based on the heuristic score to get best as first
                 Collections.sort(frontier); // sort the frontier to get best as first

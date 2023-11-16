@@ -21,11 +21,16 @@ public class State implements Comparable<State>
 
     private State father = null;
 
-
+    /**
+     * State's Constructor
+     * @param dimension (number of family members - taken only if randomized is set)
+     * @param randomized
+     */
     State(int dimension, boolean randomized)
     {
-        //if we are in the initial state we dont have any operator that led to this initial state.
+        //if we are in the initial state we don't have any operator that led to this initial state.
         this.operator.add(null);
+        this.father = null;
 
         if(randomized)
         {
@@ -128,7 +133,15 @@ public class State implements Comparable<State>
         }
     }
 
-    // constructor for creating copy of the state.
+    /**
+     *  constructor for creating copy of the state.
+     * @param fam_r
+     * @param fam_l
+     * @param cost
+     * @param father
+     * @param oper
+     * @param heuristicCost
+     */
     private State(Family[] fam_r, Family[] fam_l, int cost, State father, List<Family> oper, int heuristicCost)
     {
         this.setRights(fam_r);
@@ -206,10 +219,13 @@ public class State implements Comparable<State>
         return max;
     }
 
-    /*  Heuristic 2 - suppose that NOT only 2 people can cross the bridge, 
-     but they need someone from the left side to come and take them with the torch.
-     I choose min from the left side, max from the right side, so that i don't overestimate.
-    */
+
+    /**
+     * Heuristic 2 - suppose that NOT only 2 people can cross the bridge,
+     * but they need someone from the left side to come and take them with the torch.
+     * choose min from the left side, max from the right side, so that we don't overestimate.
+     * @return the computed cost
+     */
     private int heuristic2(){
         int maxR =-1;
         int minL = Integer.MAX_VALUE;
@@ -227,20 +243,29 @@ public class State implements Comparable<State>
     }
 
 
+    /**
+     *
+     * @param lefts array
+     */
     public void setLefts(Family[] lefts) {
         this.dimension = lefts.length;
         this.lefts = new Family[this.dimension];
 
-        for(int i = 0; i < this.dimension; i++)
-        {
-            this.lefts[i]= lefts[i];
-        }
+        System.arraycopy(lefts, 0, this.lefts, 0, this.dimension);
     }
 
+    /**
+     *
+     * @return lefts[] array
+     */
     public Family[] getLefts() {
         return lefts;
     }
 
+    /**
+     *
+     * @param rights array
+     */
     public void setRights(Family[] rights) {
         this.dimension = rights.length;
         this.rights = new Family[this.dimension];
@@ -251,25 +276,45 @@ public class State implements Comparable<State>
         }
     }
 
+    /**
+     *
+     * @return rights[] array
+     */
     public Family[] getRights() {
         return rights;
     }
 
-    int getDimension() 
+    /**
+     *
+     * @return dimension
+     */
+    public int getDimension()
 	{
         return this.dimension;
     }
 
+    /**
+     *
+     * @param dimension number of family members
+     */
     void setDimension(int dimension) 
 	{
         this.dimension = dimension;
     }
 
+    /**
+     *
+     * @return the father of the state
+     */
     public State getFather()
 	{
         return this.father;
     }
-   
+
+    /**
+     *
+     * @return a list with all the children of a state
+     */
     public ArrayList<State> getChildren(){
         ArrayList<State> children = new ArrayList<>();
         State child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //copy constructor
@@ -307,7 +352,11 @@ public class State implements Comparable<State>
         return children;
     }
 
-    // Generating every possible combination of the family members. (Ex {Father, son}, {son, mother} , {son} etc)
+    /**
+     * Generating every possible combination of the family members. (Ex {Father, son}, {son, mother} , {son} etc)
+     * @param sourceSide lefts[] or right[] array
+     * @return all combinations
+     */
     private ArrayList<List<Family>> generateCombinations(Family[] sourceSide) {
         ArrayList<List<Family>> combinations = new ArrayList<>();
         int n = sourceSide.length;
@@ -332,7 +381,11 @@ public class State implements Comparable<State>
         return combinations;
     }
 
-    void moveLeft(List<Family> members_to_move) {  
+    /**
+     *
+     * @param members_to_move 2 members from right array
+     */
+    void moveLeft(List<Family> members_to_move) {
         
         // Move exactly 2 family members from the right side to the left side.
     
@@ -362,9 +415,13 @@ public class State implements Comparable<State>
         this.increaseCost(Math.max(a, b));
     }
 
+    /**
+     *
+     * @param members_to_move 1 member from left array
+     */
     void moveRight(List<Family> members_to_move) {        
         
-        // Move exaclty 1 family member from the left side to the right side.
+        // Move exact 1 family member from the left side to the right side.
     
         Family member1 = members_to_move.get(0);
     
@@ -382,8 +439,13 @@ public class State implements Comparable<State>
     
         this.increaseCost(member1.getCrossingTime());
     }
-    
-    //  Find the index of a Family member in the array
+
+    /**
+     * Helper for finding the index of a Family member in the array
+     * @param member the family member we are searching for
+     * @param array lefts or rights
+     * @return the index of the array
+     */
     private int findFamilyIndex(Family member, Family[] array) {
         for (int i = 0; i < this.dimension; i++) 
         {
@@ -391,30 +453,49 @@ public class State implements Comparable<State>
         }
         return -1; // it will never reach here
     }
-    
-    // Find an emptyy spot in the Family array
+
+    /**
+     * Find an empty spot in the Family array
+     * @param array lefts or rights
+     * @return the index
+     */
     private int findEmptySpot(Family[] array) {
         for (int i = 0; i < this.dimension; i++) {
             if (array[i] == null) return i;
         }
         return -1;  // it will never reach here
     }
-    
 
+
+    /**
+     *
+     * @return operator that led to the current state
+     */
     public List<Family> getOperator() {
         return operator;
     }
 
 
-    
+    /**
+     *
+     * @return the cost
+     */
     public int getCost() {
         return cost;
     }
 
+    /**
+     *
+     * @param cost of the move
+     */
     public void increaseCost(int cost) {
         this.cost += cost;
     }
 
+    /**
+     * Determines if we are in a final state or not.
+     * @return boolean.
+     */
     boolean isFinal()
     {
         // we have a final state when every family member is on the left side. 
@@ -430,8 +511,12 @@ public class State implements Comparable<State>
     }
 
 
-    // override this for proper hash set comparisons.
-    //for the closed set.
+    /**
+     * override this for proper hash set comparisons.
+     * for the closed set.
+     * @param obj State
+     * @return if 2 states are equal
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -481,6 +566,10 @@ public class State implements Comparable<State>
         return leftsUniqueCodes.equals(otherLeftsUniqueCodes) && rightsUniqueCodes.equals(otherRightsUniqueCodes);
     }
 
+    /**
+     * method used for printing and graphically representing every state.
+     * @return the printing
+     */
     @Override
     public String toString() {
     StringBuilder sb = new StringBuilder();
@@ -517,9 +606,13 @@ public class State implements Comparable<State>
     return sb.toString();
     }
 
+    /**
+     *
+     * @param o the object to be compared.
+     * @return Compare based on heuristicCost in ascending order
+     */
     @Override
     public int compareTo(State o) {
-        // Compare based on heuristicCost in ascending order
         return Integer.compare(this.heuristicCost, o.heuristicCost);
     }
 }
