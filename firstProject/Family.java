@@ -2,7 +2,7 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-public class Family {
+public class Family implements Comparable<Family>{
     private final String name;
     private final int crossingTime;
     private int id;
@@ -65,5 +65,14 @@ public class Family {
     {
         return name;
     }
+
+
+
+    @Override
+    public int compareTo(Family otherFamily) {
+        // Compare based on crossing times
+        return Integer.compare(this.crossingTime, otherFamily.crossingTime);
+    }
+
 }
 

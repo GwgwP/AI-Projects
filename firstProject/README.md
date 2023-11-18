@@ -1,8 +1,6 @@
 # AI-Projects - first project : Family at a bridge
 # how to employ the code:
-`Main.java` -> run java. 
-(Automatically the code is set to a fixed example. If you wish to check different instances, comment out line 9, comment in line 10 and insert as the first parameter (200) how many randomized family members you wish to have.)
-
+`Main.java` -> run java.
 -----------
 # Code explanation
 
@@ -60,7 +58,7 @@ The `State` class features a constructor designed to initialize instances based 
   - If `randomized` is set:
     - Checks if `dimension` is less than or equal to 10.
       - If true, creates unique family members.
-      - If not, allows for the creation of multiple family members with the same role (e.g., multiple fathers).
+      - If not, creates unique family members with multiple different "child" tags.
   - If `randomized` is not set, creates the standard family configuration as given from the known example.
 
 ## Copy Constructor
@@ -91,8 +89,9 @@ The `Heuristic Manager` orchestrates the evaluation of two heuristics and determ
   5. **Finding Best State**:
       - Identifies the best state by minimizing the total cost (`f`).
 
-## Heuristic1
 
+## ======== Heuristic1 ========
+It is acceptable and consistent.
 ### Overview
 
 - **Purpose**:
@@ -106,8 +105,8 @@ The `Heuristic Manager` orchestrates the evaluation of two heuristics and determ
 2. **All-Family Crossing**:
    - Allows all family members to cross, and the cost until reaching a final state is the time of the member with the maximum time.
 
-## Heuristic2
-
+## ======== Heuristic2 ========
+It is acceptable and consistent.
 ### Overview
 
 - **Purpose**:
@@ -124,6 +123,29 @@ The `Heuristic Manager` orchestrates the evaluation of two heuristics and determ
    - Ensures someone returns and takes back the remaining family members.
    - Determines the cost (`minL`) from the people on the left side with the minimum time.
    - Returns the final heuristic cost as the sum of `minL` and `maxR`.
+
+# ======== Heuristic3 ========
+It is acceptable and consistent.
+#### NOTE
+Heuristic3 is another way of calculation the heuristic cost when the torch is on the right side.
+Between Heuristic1 and Heuristic3, we choose the heuristic which does the best approaching to the 
+real cost. However, for a high number of iterations, we do not recommend the usage of Heuristic3, because
+it increases the execution time (e.g. for 200 members, the execution time with heuristic3 was 45 sec, and without it 2,5 sec.). We added it to show that we can choose among many heuristic functions
+the best one.
+
+### Overview
+
+
+- **Purpose**:
+    - Calculated when the torch is on the right side.
+
+### Steps
+
+1. **Not the "Max crossing time counts" restriction**:
+    - We choose the minimum cost of each combination.
+
+2. **We take the maximum combination**:
+    - We take the best case combinations that could happen, but we choose the min value between the 2 persons.
 
 
 ## getChildren 
@@ -291,11 +313,13 @@ The `AstarAlgorithm` class includes:
 
 
 - **Exploration Loop**:
-  - Continues exploring until the frontier is empty or a specified limit is reached (500 iterations).
+  - Continues exploring until the frontier is empty or a specified limit is reached.
+  - The limit is the addition of the values of the crossing time * 2.
+  - In case A* algorithm failed, if the final cost occured to be higher than the limit
+  - we definitely have a problem.
+  - Otherwise, we could use a limit of iterations.
   ```java
-  while (this.frontier.size() > 0 && count <= 500) {
-      // ... (Exploration steps)
-  }
+  if (bestState.getCost() > limit) break;
   ```
 
 - **Exploration Steps**:
