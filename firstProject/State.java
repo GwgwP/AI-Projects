@@ -1,9 +1,4 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class State implements Comparable<State>
 {
@@ -124,24 +119,25 @@ public class State implements Comparable<State>
             this.torch = true;
             this.cost = 0;
             this.heuristicCost = 0;
-            this.dimension = 5;
+            this.dimension = 4;
                       
             this.rights = new Family[this.dimension];
             this.lefts = new Family[this.dimension];
             
             
-            Family son1 = new Family("Son1", 1) ;
-            Family son2 = new Family("Son2", 3) ;
+            Family son1 = new Family("Son1", 15) ;
+            Family son2 = new Family("Son2", 9) ;
             Family mother = new Family("Mother", 6) ;
-            Family father = new Family("Father", 8) ;
-            Family grandfather = new Family("Grandfather", 12) ;
+            Family father = new Family("Father", 3) ;
+            //Family grandfather = new Family("Grandfather", 12) ;
 
             this.rights[0] = son1;
             this.rights[1] = son2;
             this.rights[2] = mother;
             this.rights[3] = father;
-            this.rights[4] = grandfather;            
+            //this.rights[4] = grandfather;
         }
+        Arrays.sort(rights,  Comparator.nullsLast(Comparator.naturalOrder()));
     }
 
     /**
@@ -187,7 +183,7 @@ public class State implements Comparable<State>
             if (torch)
             { //right -> left
                 res1 = st.heuristic1();
-                //res3 = st.heuristic3();
+                res3 = st.heuristic3();
             }
             else
             { //left -> right
@@ -256,36 +252,35 @@ public class State implements Comparable<State>
         return minL + maxR;
     }
 
-//    /**
-//     * Heuristic 3 - suppose that only 2 people can cross the bridge.
-//     * I choose the combination of the members with the 2 maximum crossing times and I add
-//     * the minimum of them to the variable "addition". That means that I ignore the fact that
-//     * the cost of each crossing is the max value of the crossing times.
-//     */
-//    private int heuristic3() {
-//        List<Family> rightsList = new ArrayList<>();
-//
-//        // Filter out null elements
-//        for (Family fam : rights) {
-//            if (fam != null) {
-//                rightsList.add(fam);
-//            }
-//        }
-//
-//        int sum = 0;
-//
-//        Collections.sort(rightsList);
-//
-//        int addition = 0;
-//        if (rightsList.size() % 2 == 1) {
-//            addition += rightsList.get(0).getCrossingTime();
-//            rightsList.remove(0);
-//        }
-//        for (int i = 0; i < rightsList.size(); i = i + 2) {
-//            addition += rightsList.get(i).getCrossingTime();
-//        }
-//        return addition;
-//    }
+    /**
+     * Heuristic 3 - suppose that only 2 people can cross the bridge.
+     * I choose the combination of the members with the 2 maximum crossing times and I add
+     * the minimum of them to the variable "addition". That means that I ignore the fact that
+     * the cost of each crossing is the max value of the crossing times.
+     */
+    private int heuristic3() {
+        List<Family> rightsList = new ArrayList<>();
+
+        // Filter out null elements
+        for (Family fam : rights) {
+            if (fam != null) {
+                rightsList.add(fam);
+            }
+        }
+
+
+        Collections.sort(rightsList);
+
+        int addition = 0;
+        if (rightsList.size() % 2 == 1) {
+            addition += rightsList.get(0).getCrossingTime();
+            rightsList.remove(0);
+        }
+        for (int i = 0; i < rightsList.size(); i = i + 2) {
+            addition += rightsList.get(i).getCrossingTime();
+        }
+        return addition;
+    }
 
 
     /**
@@ -325,6 +320,9 @@ public class State implements Comparable<State>
      */
     public ArrayList<State> getChildren(){
         ArrayList<State> children = new ArrayList<>();
+
+        Arrays.sort(this.rights,  Comparator.nullsLast(Comparator.naturalOrder()));
+
         State child = new State(this.rights, this.lefts, this.cost, this.father, this.operator, this.heuristicCost); //copy constructor
         
         ArrayList<List<Family>> combos ;
