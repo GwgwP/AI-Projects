@@ -134,7 +134,11 @@ public class State implements Comparable<State>
             Family son2 = new Family("Son2", 3) ;
             Family mother = new Family("Mother", 6) ;
             Family father = new Family("Father", 8) ;
+<<<<<<< HEAD
             Family grandfather = new Family("Grandfather", 12) ;
+=======
+            Family grandfather = new Family("Grandfather", 12) ;            
+>>>>>>> c9e418ced5cdd058bf358282b01fe0e39900b8d4
 
             this.rights[0] = son1;
             this.rights[1] = son2;
@@ -185,6 +189,7 @@ public class State implements Comparable<State>
             
             if (torch) { //right -> left
                 res1 = st.heuristic1();
+<<<<<<< HEAD
                 //res3 = st.heuristic3();
             }
             else{ //left -> right
@@ -194,6 +199,16 @@ public class State implements Comparable<State>
             costs.add(res1);
             costs.add(res2);
             costs.add(res3);
+=======
+                res3 = st.heuristic3();
+            }
+            else{ //left -> right
+                res2 = st.heuristic2();
+            }
+            costs.add(res1);
+            costs.add(res2);
+            costs.add(res3);        
+>>>>>>> c9e418ced5cdd058bf358282b01fe0e39900b8d4
 
             int max = costs.get(0);
     
@@ -253,6 +268,7 @@ public class State implements Comparable<State>
         return minL + maxR;
     }
 
+<<<<<<< HEAD
 //    /**
 //     * Heuristic 3 - suppose that only 2 people can cross the bridge.
 //     * I choose the combination of the members with the 2 maximum crossing times and I add
@@ -283,6 +299,56 @@ public class State implements Comparable<State>
 //        }
 //        return addition;
 //    }
+=======
+
+    private int heuristic3() {
+        List<Family> rightsList = new ArrayList<>();
+    
+        // Filter out null elements
+        for (Family fam : rights) {
+            if (fam != null) {
+                rightsList.add(fam);
+            }
+        }
+    
+        int sum = 0;
+    
+        while (!rightsList.isEmpty()) {
+            final int[] firstMaxId = {-1};  // Using an array to make it effectively final
+            final int[] secondMaxId = {-1};
+    
+            int firstMax = Integer.MIN_VALUE;
+            int secondMax = Integer.MIN_VALUE;
+    
+            for (Family fam : rightsList) {
+                int crossingTime = fam.getCrossingTime();
+                int currentId = fam.getId();  
+    
+                if (crossingTime > firstMax) {
+                    secondMax = firstMax;
+                    secondMaxId[0] = firstMaxId[0];
+                    firstMax = crossingTime;
+                    firstMaxId[0] = currentId;
+                } else if (crossingTime > secondMax) {
+                    secondMax = crossingTime;
+                    secondMaxId[0] = currentId;
+                }
+            }
+    
+            // Find the maximum of firstMax and secondMax
+            int maxCrossingTime = Math.min(firstMax, secondMax);
+    
+            // Add the maxCrossingTime to the sum
+            sum += maxCrossingTime;
+    
+            // Remove the objects with the maximum values from rightsList
+            rightsList.removeIf(fam -> fam.getId() == firstMaxId[0] || fam.getId() == secondMaxId[0]);
+        }
+    
+        System.out.println("To sum tis eyretikis 4:" + sum);
+        return sum;
+    }
+>>>>>>> c9e418ced5cdd058bf358282b01fe0e39900b8d4
     
 
     /**
