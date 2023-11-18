@@ -22,7 +22,7 @@ public class Main
             initState = new State(dimension, true);
         }
 
-        // COMMENT OUT LINES 11-24 FOR FASTER CODE EXECUTION AND COMMENT IN LINES 28 OR 29.
+        // COMMENT OUT LINES 11-23 FOR FASTER CODE EXECUTION AND COMMENT IN LINES 27 OR 28.
 
         //State initState = new State(15, true); // Create a State instance (the one given)
         //State initState = new State(6, true); // Create a State instance (a random one)
