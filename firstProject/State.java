@@ -119,10 +119,10 @@ public class State implements Comparable<State>
             
             
             Family son1 = new Family("Son1", 1) ;
-            Family son2 = new Family("Son2", 2) ;
-            Family mother = new Family("Mother", 16) ;
-            Family father = new Family("Father", 17) ;
-            Family grandfather = new Family("Grandfather", 18) ;            
+            Family son2 = new Family("Son2", 3) ;
+            Family mother = new Family("Mother", 6) ;
+            Family father = new Family("Father", 8) ;
+            Family grandfather = new Family("Grandfather", 12) ;            
 
             this.rights[0] = son1;
             this.rights[1] = son2;
@@ -168,24 +168,19 @@ public class State implements Comparable<State>
             int res1 = 0;
             int res2 = 0;
             int res3 = 0;
-            int res4 = 0;
 
             ArrayList<Integer> costs = new ArrayList<>();
             
             if (torch) { //right -> left
                 res1 = st.heuristic1();
-                // res4 = st.heuristic4();
-                System.out.println("res1: " + res1);
-                System.out.println("res4: " + res4);
+                res3 = st.heuristic3();
             }
             else{ //left -> right
                 res2 = st.heuristic2();
-                //res3 = st.heuristic3();
             }
             costs.add(res1);
             costs.add(res2);
-            //costs.add(res3);
-            costs.add(res4);        
+            costs.add(res3);        
 
             int max = costs.get(0);
     
@@ -246,7 +241,7 @@ public class State implements Comparable<State>
     }
 
 
-    private int heuristic4() {
+    private int heuristic3() {
         List<Family> rightsList = new ArrayList<>();
     
         // Filter out null elements
