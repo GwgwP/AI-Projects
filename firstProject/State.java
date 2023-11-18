@@ -119,23 +119,23 @@ public class State implements Comparable<State>
             this.torch = true;
             this.cost = 0;
             this.heuristicCost = 0;
-            this.dimension = 4;
+            this.dimension = 5;
                       
             this.rights = new Family[this.dimension];
             this.lefts = new Family[this.dimension];
             
             
-            Family son1 = new Family("Son1", 15) ;
-            Family son2 = new Family("Son2", 9) ;
+            Family son1 = new Family("Son1", 1) ;
+            Family son2 = new Family("Son2", 3) ;
             Family mother = new Family("Mother", 6) ;
-            Family father = new Family("Father", 3) ;
-            //Family grandfather = new Family("Grandfather", 12) ;
+            Family father = new Family("Father", 8) ;
+            Family grandfather = new Family("Grandfather", 12) ;
 
             this.rights[0] = son1;
             this.rights[1] = son2;
             this.rights[2] = mother;
             this.rights[3] = father;
-            //this.rights[4] = grandfather;
+            this.rights[4] = grandfather;
         }
         Arrays.sort(rights,  Comparator.nullsLast(Comparator.naturalOrder()));
     }
