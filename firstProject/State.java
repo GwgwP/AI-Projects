@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -9,15 +10,15 @@ public class State implements Comparable<State>
 {
     private Family[] lefts; 
     private Family[] rights;
-    private int cost ; //cost till here 
+    private int cost ; //cost till the State that we refer to 
 
-    private boolean torch; //true means that the torch is at the starting side 
+    private boolean torch; //true means that the torch is at the starting side (on the right side)
     
-    private List <Family> operator = new ArrayList<>(); // we accept at most 2 people on the bridge at the same time.
+    private List <Family> operator = new ArrayList<>(); // List with the members that cross the bridge. We accept at most 2 people on the bridge at the same time.
 
     private int dimension;
 
-    private int heuristicCost;
+    private int heuristicCost; // cost that the heuristic function creates for each instance
 
     private State father = null;
 
@@ -52,8 +53,6 @@ public class State implements Comparable<State>
 
             // Shuffle the list of all family names
             Collections.shuffle(familyMembers);
-            
-        
             
             // Random number generator
             Random random = new Random();
@@ -120,10 +119,10 @@ public class State implements Comparable<State>
             
             
             Family son1 = new Family("Son1", 1) ;
-            Family son2 = new Family("Son2", 3) ;
-            Family mother = new Family("Mother", 6) ;
-            Family father = new Family("Father", 8) ;
-            Family grandfather = new Family("Grandfather", 12) ;            
+            Family son2 = new Family("Son2", 2) ;
+            Family mother = new Family("Mother", 16) ;
+            Family father = new Family("Father", 17) ;
+            Family grandfather = new Family("Grandfather", 18) ;            
 
             this.rights[0] = son1;
             this.rights[1] = son2;
@@ -168,29 +167,32 @@ public class State implements Comparable<State>
         for (State st : children){
             int res1 = 0;
             int res2 = 0;
+            int res3 = 0;
+            int res4 = 0;
 
             ArrayList<Integer> costs = new ArrayList<>();
             
             if (torch) { //right -> left
                 res1 = st.heuristic1();
+                // res4 = st.heuristic4();
+                System.out.println("res1: " + res1);
+                System.out.println("res4: " + res4);
             }
             else{ //left -> right
                 res2 = st.heuristic2();
+                //res3 = st.heuristic3();
             }
             costs.add(res1);
             costs.add(res2);
-      
-            
+            //costs.add(res3);
+            costs.add(res4);        
 
             int max = costs.get(0);
-            
-            
-
+    
             for (Integer k:costs){
                 if (k>max) max=k;
             }
             
-
             st.heuristicCost = max;
             f =  st.cost + max;
 
@@ -244,6 +246,55 @@ public class State implements Comparable<State>
     }
 
 
+    private int heuristic4() {
+        List<Family> rightsList = new ArrayList<>();
+    
+        // Filter out null elements
+        for (Family fam : rights) {
+            if (fam != null) {
+                rightsList.add(fam);
+            }
+        }
+    
+        int sum = 0;
+    
+        while (!rightsList.isEmpty()) {
+            final int[] firstMaxId = {-1};  // Using an array to make it effectively final
+            final int[] secondMaxId = {-1};
+    
+            int firstMax = Integer.MIN_VALUE;
+            int secondMax = Integer.MIN_VALUE;
+    
+            for (Family fam : rightsList) {
+                int crossingTime = fam.getCrossingTime();
+                int currentId = fam.getId();  
+    
+                if (crossingTime > firstMax) {
+                    secondMax = firstMax;
+                    secondMaxId[0] = firstMaxId[0];
+                    firstMax = crossingTime;
+                    firstMaxId[0] = currentId;
+                } else if (crossingTime > secondMax) {
+                    secondMax = crossingTime;
+                    secondMaxId[0] = currentId;
+                }
+            }
+    
+            // Find the maximum of firstMax and secondMax
+            int maxCrossingTime = Math.min(firstMax, secondMax);
+    
+            // Add the maxCrossingTime to the sum
+            sum += maxCrossingTime;
+    
+            // Remove the objects with the maximum values from rightsList
+            rightsList.removeIf(fam -> fam.getId() == firstMaxId[0] || fam.getId() == secondMaxId[0]);
+        }
+    
+        System.out.println("To sum tis eyretikis 4:" + sum);
+        return sum;
+    }
+    
+
     /**
      *
      * @param lefts array
@@ -254,8 +305,6 @@ public class State implements Comparable<State>
 
         System.arraycopy(lefts, 0, this.lefts, 0, this.dimension);
     }
-
-
 
     /**
      *
