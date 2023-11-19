@@ -183,7 +183,7 @@ public class State implements Comparable<State>
             if (torch)
             { //right -> left
                 res1 = st.heuristic1();
-                res3 = st.heuristic3();
+                //res3 = st.heuristic3();
             }
             else
             { //left -> right
@@ -251,36 +251,36 @@ public class State implements Comparable<State>
         }
         return minL + maxR;
     }
-
-    /**
-     * Heuristic 3 - suppose that only 2 people can cross the bridge.
-     * I choose the combination of the members with the 2 maximum crossing times and I add
-     * the minimum of them to the variable "addition". That means that I ignore the fact that
-     * the cost of each crossing is the max value of the crossing times.
-     */
-    private int heuristic3() {
-        List<Family> rightsList = new ArrayList<>();
-
-        // Filter out null elements
-        for (Family fam : rights) {
-            if (fam != null) {
-                rightsList.add(fam);
-            }
-        }
-
-
-        Collections.sort(rightsList);
-
-        int addition = 0;
-        if (rightsList.size() % 2 == 1) {
-            addition += rightsList.get(0).getCrossingTime();
-            rightsList.remove(0);
-        }
-        for (int i = 0; i < rightsList.size(); i = i + 2) {
-            addition += rightsList.get(i).getCrossingTime();
-        }
-        return addition;
-    }
+//
+//    /**
+//     * Heuristic 3 - suppose that only 2 people can cross the bridge.
+//     * I choose the combination of the members with the 2 maximum crossing times and I add
+//     * the minimum of them to the variable "addition". That means that I ignore the fact that
+//     * the cost of each crossing is the max value of the crossing times.
+//     */
+//    private int heuristic3() {
+//        List<Family> rightsList = new ArrayList<>();
+//
+//        // Filter out null elements
+//        for (Family fam : rights) {
+//            if (fam != null) {
+//                rightsList.add(fam);
+//            }
+//        }
+//
+//
+//        Collections.sort(rightsList);
+//
+//        int addition = 0;
+//        if (rightsList.size() % 2 == 1) {
+//            addition += rightsList.get(0).getCrossingTime();
+//            rightsList.remove(0);
+//        }
+//        for (int i = 0; i < rightsList.size(); i = i + 2) {
+//            addition += rightsList.get(i).getCrossingTime();
+//        }
+//        return addition;
+//    }
 
 
     /**
