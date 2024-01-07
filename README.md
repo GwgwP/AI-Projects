@@ -3,7 +3,7 @@
 ### Academic Year: 2023–24
 ### Instructor: I. Androutsopoulos
 
-## First Project
+## First Project (Grade: 10/10)
 <details>
 <summary>River Crossing Problem</summary>
 
