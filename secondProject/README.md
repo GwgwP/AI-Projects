@@ -1,4 +1,4 @@
-# IMDB reviews classification report 
+# IMDb reviews classification report 
 ### Project Developers
 Meet the brilliant minds behind this project:
 
@@ -9,10 +9,8 @@ Meet the brilliant minds behind this project:
 - **Dimosthenis Plavos**
   - *a.m:* 3200156
   - *email:* p3200156@aueb.gr
----
-PART A
-----
-### imports
+
+### Imports
 <details open>
   <summary> click to expand</summary>
 <p> 
@@ -20,7 +18,7 @@ Here we make all the necessary imports from data libraries and machine learning 
 </p>
 </details>
 
-### Fetching data from imdb
+### Fetching data from IMDb
 <details open>
   <summary>click to expand</summary>
 
@@ -32,7 +30,7 @@ Here we make all the necessary imports from data libraries and machine learning 
 <details open>
   <summary> click to expand</summary>
 
-The `vectorize_examples` function utilizes CountVectorizer from scikit-learn to convert text data into binary vectors. It accepts a predefined `vocabulary` (see above) and the training data, producing binary feature vectors. This function transforms textual input into a format suitable for machine learning models.
+The `vectorize_examples` function utilizes CountVectorizer from scikit-learn to convert text data into binary vectors. It accepts a predefined `vocabulary` and the training data, producing binary feature vectors. This function transforms textual input into a format suitable for machine learning models.
 </details>
 
 ### Information Gain
@@ -40,14 +38,16 @@ The `vectorize_examples` function utilizes CountVectorizer from scikit-learn to 
   <summary> click to expand</summary>
 
 - Code given from the labs
-- The `calculate_ig` function computes the Information Gain (IG) for a binary feature in a dataset with corresponding class labels (positive and negative category). It employs the concept of entropy to quantify the uncertainty in the classes. By evaluating the impact of the binary feature on reducing this uncertainty, IG measures the effectiveness of the feature in classifying examples. (e.x the information gain of word "bad" should be high) The function considers the distribution of classes and the occurrences of feature values, providing a valuable metric for feature selection in machine learning applications, particularly in decision tree algorithms.
+- The `calculate_ig` function computes the Information Gain (IG) for a binary feature in a dataset with corresponding class labels (positive and negative category). It employs the concept of entropy to quantify the uncertainty in the classes. By evaluating the impact of the binary feature on reducing this uncertainty, IG measures the effectiveness of the feature in classifying examples. (e.x the information gain of word "bad" should be high).
 </details>
 
 ### Vocabulary Creation Process
 <details open>
   <summary> click to expand</summary>
 
-The `create_vocabulary` function is responsible for generating a the vocabulary for the reviews based on Information Gain (IG) criteria. Here's a breakdown of the code:
+The `create_vocabulary` function is responsible for generating a the vocabulary for the reviews based on Information Gain (IG) criteria.
+
+**In detail:**
 
 1. **Word Frequency Calculation:**
    - Iterate through each review in the training data (`x_train`).
@@ -59,6 +59,7 @@ The `create_vocabulary` function is responsible for generating a the vocabulary 
 3. **Sorting by Frequency:**
    - Sort the remaining words based on their frequency in descending order.
    - Exclude the top `n` and bottom `k` words from consideration.
+   - Keep `m` of them
 
 4. **Information Gain Calculation:**
    - Vectorize the remaining words using the `vectorize_examples` function (`calculate_ig` takes a binary feature).
@@ -128,7 +129,7 @@ The `CustomLogisticRegression` class implements a logistic regression classifier
 - Weights are set to `None` initially.
 
 ### Sigmoid Function
-- The `sigmoid` function computes the sigmoid (logistic) function, a crucial part of logistic regression.
+- The `sigmoid` function computes the sigmoid (logistic) function.
 
 ### Training (`fit` method)
 - The `fit` method trains the model using binary training data (`x_train_binary`) and corresponding labels (`y_train`).
@@ -142,11 +143,9 @@ The `CustomLogisticRegression` class implements a logistic regression classifier
 ### Prediction (`predict` method)
 - The `predict` method predicts class labels for binary test data (`x_test_binary`).
 - It uses the learned weights from fit method to calculate the dot product and checks the sign of the dot product to classify instances.
-
-This custom logistic regression implementation is designed for binary classification tasks with a focus on optimizing performance and robustness.
 </details>
 
-## Part B
+
 ### Hyperparameters
 #### Regularizer
 <details open>
@@ -162,6 +161,41 @@ This custom logistic regression implementation is designed for binary classifica
   
   - The `learning_rate` is fixed at 0.001 
 </details>
+
+### Bidirectional GRU RNN class
+<details open>
+<summary> click to expand</summary>
+
+- `Embedding Layer`: The emb_size parameter determines the size of the word embeddings, and it initializes the embedding layer with pre-trained weights.
+- `GRU Layers`: The architecture consists of multiple - Bidirectional GRU layers (num_layers). These layers capture sequential dependencies bidirectionally.
+- `Dropout`: Dropout is applied to regularize the model and prevent overfitting.
+- `Output Layer`: The model ends with a Dense layer with a sigmoid activation function.
+
+**Model: Bidirectional GRU model**
+
+*Algorithmic Explanation:*
+- `Input Layer:` The method starts by defining an input layer for text data.
+- `Tokenization and Embedding:` It tokenizes the input text using the provided vectorizer and embeds the tokens using an embedding layer.
+- `Bidirectional GRU Layers:` The method then constructs Bidirectional GRU layers, with each layer processing sequences bidirectionally.
+- `Dropout Layer:` Dropout is applied to the output of the GRU layers for regularization.
+- `Output Layer:` The final output is obtained through a Dense layer with a sigmoid activation function.
+- `Model Compilation:` The resulting model is compiled with binary cross-entropy loss and some metrics.
+
+**fit Method**
+
+*Algorithmic Explanation:*
+- `Model Compilation:` The method starts by compiling the Bidirectional GRU model, specifying the loss function, optimizer, and evaluation metrics.
+- `Training:` It then fits the model to the provided training data (x_train_b and y_train_b), performing the specified number of epochs.
+
+**predict Method**
+
+*Algorithmic Explanation:*
+
+- `Prediction:` The method takes the trained Bidirectional GRU model and predicts the labels for the provided test data (x_test_b).
+- `Rounding:` The predicted probabilities are rounded to 0 or 1, making them suitable for binary classification.
+</details>
+
+
 
 ### Curves
 <details open>
@@ -181,7 +215,11 @@ Return the lists of performance metrics for each iteration.
 
 *info:* the lists returned are being used by `make_comparisons` to compare the results of 2 different machine learning algorithms. 
 
-#### Comparisons
+### Loss Plot
+The provided `loss_plot` function generates a visual representation of the training and validation loss over epochs, aiding in the assessment of model performance.
+
+
+### Comparisons
 
 **Description:**
 The `make_comparisons` function is designed to visualize the differences in performance metrics between two different machine learning models at various training set sizes. It takes as input the performance metrics obtained from the learning_curves function (mentioned before) for two different models, the corresponding training sizes, and additional parameters for customization. The differences in accuracy, precision, recall, and F1 score between the two models are calculated and presented in a heatmap
@@ -193,17 +231,19 @@ Plot a heatmap using seaborn to visually represent the differences in performanc
 Customize the plot title based on the specified comparison scenario. Then, display the heatmap.
 </details>
 
-### Fetching data before Training the models:
- This code fetches the data from IMDb, prepares them for the above machine learning models by creating a vocabulary by using `create_vocabulary` mentioned above, and then vectorizing the text examples into binary feature vectors using the created vocabulary. These binary vectors can be used as input features for machine learning models, enabling the application of various classification algorithms to the data.
+## Fetching data before Training the models:
+ This code fetches the data from IMDb, prepares them for the above machine learning models by creating a vocabulary by using `create_vocabulary` mentioned above, and then vectorizing the text examples into binary feature vectors using the created vocabulary.
 
 ### Training and Testing Naive Bayes
 <details open>
 <summary> click to expand</summary>
-this code snippet trains our custom Naive Bayes classifier on binary vectorized text data and provides a detailed classification report for both the training and testing sets. By printing the classification report we can evaluate the performance of the our model.
+
+#### 1a. Running Custom Naive Bayes.
+this code snippet trains our custom Naive Bayes classifier on binary vectorized text data and provides a detailed classification report for both the training and testing sets. 
 
 #### 1b. Printing Curves and table for Custom Naive Bayes
-#### 2a. Training and Testing Bernoulli Naive Bayes (from sickitlearn)
-this code snippet trains the Naive Bayes classifier on binary vectorized text data and provides a detailed classification report for both the training and testing sets. By printing the classification report we can evaluate the performance of the our model.
+#### 2a. Training and Testing Bernoulli Naive Bayes (from sickit-learn)
+this code snippet trains the Naive Bayes classifier on binary vectorized text data and provides a detailed classification report for both the training and testing sets.
 
 #### 2b. Printing Curves and table for Bernoulli Naive Bayes (from sickitlearn)
 
@@ -215,71 +255,35 @@ here we print the heatmap for our Custom Naive Bayes and BernoulliNB
 ### Training and Testing Logistic Regression
 <details open>
 <summary> click to expand</summary>
+
+#### 1a. Running Custom Logistic Regression
 this code snippet trains our custom Logistic regression classifier, and finds out the best regularization factor (λ). 
 
 *How?*  It involves splitting the training data into training and development sets, then searching for the optimal regularization parameter using the `find_regularizer` function.
 
 #### 1b. Printing Curves and table for Logistic Regression with Stochastic Gradient Ascent
-#### 2a. Training and Testing Logistic Regression (from sickitlearn)
-this code snippet trains the Logistic Regression classifier on binary vectorized text data and provides a detailed classification report for both the training and testing sets. By printing the classification report we can evaluate the performance of the our model.
+#### 2a. Training and Testing Logistic Regression (from sickit-learn)
+this code snippet trains the Logistic Regression classifier on binary vectorized text data and provides a detailed classification report for both the training and testing sets.
 
 #### 2b. Printing Curves and table for Bernoulli Naive Bayes (from sickitlearn)
 
 #### 3. Comparisons:
 here we print the heatmap for our Logistic Regression classifier and LogisticRegression
-
 </details>
 
-Certainly! Let's dive deeper into each part of the RNN class, explaining the algorithmic steps and rationale behind them.
-
-
-## Part C
-### Bidirectional GRU RNN class
-<details open>
-<summary> click to expand</summary>
-
-- `Embedding Layer`: The emb_size parameter determines the size of the word embeddings, and it initializes the embedding layer with pre-trained weights.
-- `GRU Layers`: The architecture consists of multiple - Bidirectional GRU layers (num_layers). These layers capture sequential dependencies bidirectionally.
-- `Dropout`: Dropout is applied to regularize the model and prevent overfitting.
-- `Output Layer`: The model ends with a Dense layer with a sigmoid activation function, suitable for binary classification tasks.
-
-**Model: Bidirectional GRU model**
-
-*Algorithmic Explanation:*
-- `Input Layer:` The method starts by defining an input layer for text data.
-- `Tokenization and Embedding:` It tokenizes the input text using the provided vectorizer and embeds the tokens using an embedding layer.
-- `Bidirectional GRU Layers:` The method then constructs Bidirectional GRU layers, with each layer processing sequences bidirectionally.
-- `Dropout Layer:` Dropout is applied to the output of the GRU layers for regularization.
-- `Output Layer:` The final output is obtained through a Dense layer with a sigmoid activation function, suitable for binary classification.
-- `Model Compilation:` The resulting model is compiled with binary cross-entropy loss and appropriate metrics.
-
-**fit Method**
-
-*Algorithmic Explanation:*
-- `Model Compilation:` The method starts by compiling the Bidirectional GRU model, specifying the loss function, optimizer, and evaluation metrics.
-- `Training:` It then fits the model to the provided training data (x_train_b and y_train_b), performing the specified number of epochs.
-
-**predict Method**
-
-*Algorithmic Explanation:*
-
-- `Prediction:` The method takes the trained Bidirectional GRU model and predicts the labels for the provided test data (x_test_b).
-- `Rounding:` The predicted probabilities are rounded to 0 or 1, making them suitable for binary classification.
-</details>
-
-### Training the model
+### Training the RNN model
 <details open>
 <summary> click to expand</summary>
 
 1. Preparing the data for the RNN model by estimating the sequence length, determining the appropriate sequence length for padding, and creating a text vectorizer. Let's break down the steps:
-      - Explanation: The code calculates the average length of all reviews in the training data (x_train) and estimates a 99% confidence interval using the sample mean and standard deviation. The confidence interval is calculated to determine an appropriate maximum sequence length for padding.
+      - Explanation: The code calculates the average length of all reviews in the training data (x_train).
 
-2. SEQ_MAX_LENGTH is calculated in the above snippet, TextVectorization layer is configured to output integer-encoded sequences (output_mode='int') and pad sequences to the specified maximum length. The vocabulary for the text vectorizer is set to include the keys from the previously created vocabulary.
+2. Embedding layer creates word embeddings by mapping integer encoded sequences to dense vectors, so we first convert the examples (sequences) to integer vectors
 
 3. After these, we train our RNN model and we make the predictions for the sentiment analysis.
 </details>
 
-### Testing the model
+### Testing the RNN model
 <details open>
 <summary> click to expand</summary>
 
@@ -291,8 +295,8 @@ Certainly! Let's dive deeper into each part of the RNN class, explaining the alg
 <details open>
 <summary> click to expand</summary>
 
-1. We print the comparisons (heatmap) for RNN vs Custom Naive Bayes.
-2. We print the comparisons (heatmap) for RNN vs Custom Logistic Regression.
+1. We print the comparisons (heatmap) for Custom Naive Bayes vs RNN .
+2. We print the comparisons (heatmap) for Custom Logistic Regression vs RNN.
 </details>
 
 
