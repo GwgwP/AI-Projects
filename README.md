@@ -30,7 +30,7 @@ Your program should use the A* algorithm with heuristics, which you will describ
 
 
 
-## Assignment 2 - Part A (60%)
+## Part A (60%)
 Implement in Java, C++, or Python (or another language permitted by your tutors) two or three (depending on the size of your team) of the following machine learning algorithms. These algorithms should be capable of classifying texts into two (distinct) categories, for example, positive/negative sentiment.
 
 1. Naive Bayes Classifier, using either the Bernoulli multivariate form (as in the slides of the 16th lecture) or the polynomial form (refer to the references at the end of the slides of the 16th lecture).
