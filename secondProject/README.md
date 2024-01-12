@@ -11,7 +11,7 @@ Meet the brilliant minds behind this project:
   - *email:* p3200156@aueb.gr
 
 ### Imports
-<details open>
+<details>
   <summary> click to expand</summary>
 <p> 
 Here we make all the necessary imports from data libraries and machine learning libraries
@@ -19,7 +19,7 @@ Here we make all the necessary imports from data libraries and machine learning 
 </details>
 
 ### Fetching data from IMDb
-<details open>
+<details>
   <summary>click to expand</summary>
 
 - Code given from the labs
@@ -27,14 +27,14 @@ Here we make all the necessary imports from data libraries and machine learning 
 </details>
 
 ### Vectorizing examples
-<details open>
+<details>
   <summary> click to expand</summary>
 
 The `vectorize_examples` function utilizes CountVectorizer from scikit-learn to convert text data into binary vectors. It accepts a predefined `vocabulary` and the training data, producing binary feature vectors. This function transforms textual input into a format suitable for machine learning models.
 </details>
 
 ### Information Gain
-<details open>
+<details>
   <summary> click to expand</summary>
 
 - Code given from the labs
@@ -42,7 +42,7 @@ The `vectorize_examples` function utilizes CountVectorizer from scikit-learn to 
 </details>
 
 ### Vocabulary Creation Process
-<details open>
+<details>
   <summary> click to expand</summary>
 
 The `create_vocabulary` function is responsible for generating a the vocabulary for the reviews based on Information Gain (IG) criteria.
@@ -74,7 +74,7 @@ By calculating the IG we improve feature selection for the next machine learning
 </details>
 
 ## Naive Bayes Classifier
-<details open>
+<details>
   <summary> click to expand</summary>
 
 The `NaiveBayesCustom` class implements a simple Naive Bayes classifier.
@@ -120,7 +120,7 @@ Lastly, sum_prob0 and sum_prob1 represent the log probabilities of the test inst
 
 
 ## Custom Logistic Regression
-<details open>
+<details>
   <summary> click to expand</summary>
 
 The `CustomLogisticRegression` class implements a logistic regression classifier with a stochastic gradient ascent optimization method. 
@@ -148,7 +148,7 @@ The `CustomLogisticRegression` class implements a logistic regression classifier
 
 ### Hyperparameters
 #### Regularizer
-<details open>
+<details>
   <summary> click to expand</summary>
   
   - The `find_regularizer` function is designed to identify the optimal regularization parameter for the custom logistic regression model. It is used to prevent overfitting by adding a "penalty" term to the model's cost function. 
@@ -156,14 +156,14 @@ The `CustomLogisticRegression` class implements a logistic regression classifier
 </details>
 
 #### Learning rate 
-<details open>
+<details>
   <summary> click to expand</summary>
   
   - The `learning_rate` is fixed at 0.001 
 </details>
 
 ### Bidirectional GRU RNN class
-<details open>
+<details>
 <summary> click to expand</summary>
 
 - `Embedding Layer`: The emb_size parameter determines the size of the word embeddings, and it initializes the embedding layer with pre-trained weights.
@@ -198,7 +198,7 @@ The `CustomLogisticRegression` class implements a logistic regression classifier
 
 
 ### Curves
-<details open>
+<details>
   <summary> click to expand</summary>
 
   - The `learning_curves` function is designed to visualize the learning curves of the predictive models by calculating and plotting various performance metrics at different training set sizes. It takes a machine learning predictor and evaluates its performance on training and testing sets while gradually increasing the size of the training set in multiple iterations.
@@ -235,7 +235,7 @@ Customize the plot title based on the specified comparison scenario. Then, displ
  This code fetches the data from IMDb, prepares them for the above machine learning models by creating a vocabulary by using `create_vocabulary` mentioned above, and then vectorizing the text examples into binary feature vectors using the created vocabulary.
 
 ### Training and Testing Naive Bayes
-<details open>
+<details>
 <summary> click to expand</summary>
 
 #### 1a. Running Custom Naive Bayes.
@@ -253,7 +253,7 @@ here we print the heatmap for our Custom Naive Bayes and BernoulliNB
 </details>
 
 ### Training and Testing Logistic Regression
-<details open>
+<details>
 <summary> click to expand</summary>
 
 #### 1a. Running Custom Logistic Regression
@@ -272,7 +272,7 @@ here we print the heatmap for our Logistic Regression classifier and LogisticReg
 </details>
 
 ### Training the RNN model
-<details open>
+<details>
 <summary> click to expand</summary>
 
 1. Preparing the data for the RNN model by estimating the sequence length, determining the appropriate sequence length for padding, and creating a text vectorizer. Let's break down the steps:
@@ -284,7 +284,7 @@ here we print the heatmap for our Logistic Regression classifier and LogisticReg
 </details>
 
 ### Testing the RNN model
-<details open>
+<details>
 <summary> click to expand</summary>
 
 1. We print the curves and table for accuracy, precision, recal and F1 score of our model.
@@ -292,7 +292,7 @@ here we print the heatmap for our Logistic Regression classifier and LogisticReg
 </details>
 
 ### Comparing the models
-<details open>
+<details>
 <summary> click to expand</summary>
 
 1. We print the comparisons (heatmap) for Custom Naive Bayes vs RNN .
