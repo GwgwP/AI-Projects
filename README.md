@@ -3,7 +3,7 @@
 ### Academic Year: 2023–24
 ### Instructor: I. Androutsopoulos
 
-## First Project (Grade: 10/10)
+## First Project - AI (Grade: 10/10)
 <details>
 <summary>River Crossing Problem</summary>
 
@@ -24,7 +24,7 @@ Your program should use the A* algorithm with heuristics, which you will describ
 
 </details>
 
-## Second Project
+## Second Project - Machine Learning
 <details>
 <summary>Sentiment Analysis for IMDb dataset</summary>
 
