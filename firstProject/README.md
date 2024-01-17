@@ -10,7 +10,7 @@ Developers:
 # Code explanation
 
 ## Class State 
-<details open>
+<details>
   <summary> click to expand</summary>
 
 The `State` class is a representation of each state in the problem, embodying various attributes and methods to manage state transitions. Here's a breakdown:
@@ -231,7 +231,7 @@ for comparing which state is better we look at the min heuristic cost (used from
 </details>
 
 ## class Family
-<details open>
+<details>
   <summary> click to expand</summary>
 
 The `Family` class is a Java class that represents a family member of the problem.
@@ -266,7 +266,7 @@ Calls the generateUniqueId method to assign a unique ID to the family.
 </details>
 
 ## Class Main
-<details open>
+<details>
   <summary> click to expand</summary>  
 
 The `Main` class in Java serves as the entry point for the program. Here is a brief summary of its functionality:
@@ -291,7 +291,7 @@ The `Main` class in Java serves as the entry point for the program. Here is a br
 </details>
 
 ## Class AstarAlgorithm  
-<details open>
+<details>
   <summary> click to expand</summary>
 
 The `AstarAlgorithm` class in Java implements the A* algorithm for searching and finding a solution path.
