@@ -1,4 +1,4 @@
-![image](https://github.com/GwgwP/AI-Projects/assets/140728504/ae40c978-41e9-477d-84a2-a12774a7100b)
+<img alt="AI-img" src="https://www.simplilearn.com/ice9/free_resources_article_thumb/Deep_Learning_Applications.jpg">
 
 # Athens University of Economics, Department of Computer Science
 ## Course: Artificial Intelligence

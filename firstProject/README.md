@@ -1,10 +1,11 @@
-![image](https://github.com/GwgwP/AI-Projects/assets/140728504/2b8194d5-3dfd-4663-a0f1-38e6b4a1b7a9)
-
 # AI-Projects - first project : Family at a bridge 
 Developers:
 
 - Georgia Petsa 3200155
 - Dimosthenis Plavos 3200156
+
+
+![family at a bridge](https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/05/5c/c2/055cc27e-77df-5b27-2da5-4fbb42018b31/d1e0972f-48a7-4a42-bf03-590c4a6e7fc8_Simulator_Screen_Shot_-_iPad_Pro__U002812.9-inch_U0029__U00284th_generation_U0029_-_2021-10-06_at_17.11.10.png/643x0w.jpg)
 
 
 # Code explanation
@@ -341,3 +342,5 @@ The `AstarAlgorithm` class includes:
 
 This class manages the A* algorithm's exploration process, maintaining a frontier of states and a closed set to avoid redundant exploration. The heuristic-based selection of states guides the search toward an optimal solution.
 </details>
+
+![image](https://thebulletin.org/wp-content/uploads/2023/08/AdobeStock_580829354-1024x683.jpeg)

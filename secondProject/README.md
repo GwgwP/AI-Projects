@@ -1,4 +1,4 @@
-![image](https://github.com/GwgwP/AI-Projects/assets/140728504/a667080f-6a06-4b31-bfd9-0dc3a4394e80)
+![image](https://sprcdn-assets.sprinklr.com/674/8b955864-7307-4d41-8ded-c194170f5305-2729152590.jpg)
 
 # IMDb reviews classification report 
 ### Project Developers
