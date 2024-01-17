@@ -1,3 +1,5 @@
+![image](https://github.com/GwgwP/AI-Projects/assets/140728504/2b8194d5-3dfd-4663-a0f1-38e6b4a1b7a9)
+
 # AI-Projects - first project : Family at a bridge 
 Developers:
 
