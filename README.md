@@ -1,3 +1,4 @@
+![machine learning](https://www.google.com/search?sca_esv=599145432&sxsrf=ACQVn08xmbuR6ee-E5ltN16Ew3kDVijh0A:1705503116208&q=machine+learning&tbm=isch&source=lnms&sa=X&sqi=2&ved=2ahUKEwjqjp6b1uSDAxXo2AIHHWtHC_AQ0pQJegQIExAB&biw=2560&bih=1279&dpr=1.5#imgrc=6NnO_LW8IW2z9M&imgdii=WaK2ZW-4F3CWDM)
 # Athens University of Economics, Department of Computer Science
 ## Course: Artificial Intelligence
 ### Academic Year: 2023–24
