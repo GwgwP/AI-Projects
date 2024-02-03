@@ -88,6 +88,49 @@ The `NaiveBayesCustom` class implements a simple Naive Bayes classifier.
 - It calculates the prior probabilities of classes and the likelihood of features given each class.
 - Laplace smoothing with a factor of 1 is applied to handle unseen features.
 
+For optical representation lets assume that the training examples are these:
+```python
+X = np.array([
+    [1, 0, 1, 0],  # Feature set for example 1
+    [0, 1, 1, 1],  # Feature set for example 2
+    [1, 1, 0, 0],  # Feature set for example 3
+    [0, 0, 1, 1],  # Feature set for example 4
+])
+
+y = np.array([0, 1, 0, 1])  # Labels (0 for negative, 1 for positive)
+
+```
+```python
+# Select samples belonging to class 0,1
+        X_0 = []
+        X_1 = []  
+
+        for i in range(x_train_binary.shape[1]):
+            if y_train[i] == 0:
+                X_0.append(x_train_binary[i])
+            else:
+                X_1.append(x_train_binary[i])
+            
+        # Convert lists to numpy arrays
+        X_0 = np.array(X_0)
+        X_1 = np.array(X_1)
+
+```
+this code snippet would contain at X_0 2 of the prior examples. That is:
+```python
+[1, 0, 1, 0],
+[1, 1, 0, 0]
+```
+Then, calculate the Laplace-smoothed probabilities for each feature being 1 given class 0:
+```python
+self.feature_probs[0] = (X_0.sum(axis=0) + 1) / (len(X_0) + 2)
+# [(2+1)/4,(1+1)/4,(1+1)/4,(0+1)/4]
+```
+In the end the smooth probabilities for class 0 would be
+```pytoh 
+[3/4, 2/4, 2/4, 1/4]
+```
+
 ### Prediction (`predict` method)
 - The `predict` method predicts class labels for binary test data (`x_test_binary`). It returns a list 0s and 1s meaning the test data belong to category 0 or 1.
 - It calculates the log probabilities for each class based on the learned model.
