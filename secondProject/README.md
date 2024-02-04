@@ -255,10 +255,20 @@ Make predictions on both the current subset and the entire testing set.
 Calculate various performance metrics (accuracy, precision, recall, F1 score) for both the training and testing sets.
 Append the metrics to their respective lists.
 Update the reporting table and display it using pandas.
-Plot learning curves for accuracy, precision, recall, and F1 score.
+Plot learning curves for `accuracy`, `precision`, `recall`, and `F1 score`.
 Return the lists of performance metrics for each iteration.
 
 *info:* the lists returned are being used by `make_comparisons` to compare the results of 2 different machine learning algorithms. 
+
+*Accuracy:* correct decisions/total decisions
+
+*Precision:* How many of the instances classified in the class (true positives + false positives) are true members of the class (true positives).
+Precision = TP/(TP+FP)
+
+*Recall:* How many of the true members of a class (true positives + false negatives) are classified in the class (true positives). 
+Recall = TP/(TP+FN)
+
+*F1:* Combination of precision and recall (weighted harmonic mean).
 
 ### Loss Plot
 The provided `loss_plot` function generates a visual representation of the training and validation loss over epochs, aiding in the assessment of model performance.
