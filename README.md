@@ -26,7 +26,7 @@ Your program should use the A* algorithm with heuristics, which you will describ
 
 </details>
 
-## Second Project - Machine Learning
+## Second Project - Machine Learning (Grade: 10/10)
 <details>
 <summary>Sentiment Analysis for IMDb dataset</summary>
 
