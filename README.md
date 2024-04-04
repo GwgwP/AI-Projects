@@ -2,8 +2,10 @@
 
 # Athens University of Economics, Department of Computer Science
 ## Course: Artificial Intelligence
-### Academic Year: 2023–24
-### Instructor: I. Androutsopoulos
+
+### Collaborators: Georgia Petsa & Dimosthenis Plavos
+#### Academic Year: 2023–24
+#### Instructor: I. Androutsopoulos
 
 ## First Project - AI (Grade: 10/10)
 <details>
